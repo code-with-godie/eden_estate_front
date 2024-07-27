@@ -125,7 +125,7 @@ const SinglePost = () => {
       <Left>
         <Top>
           <ImageContainer>
-            <Images src={post?.images[0]} />
+            <Images src={post?.image} />
           </ImageContainer>
           <OtherImagesContainer>
             {post?.images?.slice(1)?.map((item, index) => (

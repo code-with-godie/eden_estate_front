@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import DropZone from './DropZone';
+import FileViewer from './FileViewer';
+// import { toast } from 'react-toastify';
+import { postData } from '../../api/apiCalls';
 import { useAppContext } from '../../context/AppContextProvider';
 import { useNavigate } from 'react-router-dom';
-import { Bounce, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { postData } from '../../api/apiCalls';
-import LoadingAnimation from '../../components/loading/LoadingAnimation';
-
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
@@ -17,6 +16,16 @@ const Wrapper = styled.div`
 `;
 const Left = styled.div`
   flex: 1;
+`;
+const Right = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: auto;
+  @media screen and (min-width: 768px) {
+    max-width: 400px;
+  }
 `;
 
 const Container = styled.form`
@@ -46,28 +55,18 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  color: inherit;
+
   gap: 0.3rem;
 `;
-const ButtonWrapper = styled.div`
-  display: flex;
-  gap: 0.5rem;
-  justify-content: space-between;
-`;
 const Label = styled.p``;
-const LabelSmall = styled.p`
-  font-size: 0.8rem;
-  color: #aaaaaa;
-`;
 const TextArea = styled.textarea`
   flex: 1;
   border-radius: 0.3rem;
   outline: none;
-  padding: 0.5rem;
   background: transparent;
   border: 1px solid #aaaaaa;
   color: inherit;
-  min-height: 100px;
+  min-height: 200px;
   resize: vertical;
 `;
 const Button = styled.button`
@@ -97,12 +96,34 @@ const Select = styled.select`
   border-radius: 0.5rem;
 `;
 const Option = styled.option``;
-const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
-  const [disabled, setDisabled] = useState(false);
-  const [loading, setLoading] = useState(false);
+const NewRoom = () => {
+  const [images, setImages] = useState([]);
+  const [disabled, setDisabled] = useState(true);
   const { token } = useAppContext();
-  const { darkMode } = useAppContext();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [post, setPost] = useState({
+    title: '',
+    price: '',
+    address: '',
+    city: '',
+    bedrooms: 1,
+    bathrooms: 1,
+    longitude: '',
+    latitude: '',
+    income: '',
+    size: '',
+    school: '',
+    bus: '',
+    restaurant: '',
+    property: 'apartment',
+    utilities: 'Owner is responsible',
+    pet: 'pet are allowed',
+    type: 'rent',
+    desc: '',
+    images,
+  });
+
   const onChange = e => {
     const name = e.target.name;
     const value = e.target.value;
@@ -110,68 +131,119 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
   };
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!image) {
-      toast.error('estate image is required', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: `${darkMode ? 'dark' : 'light'}`,
-        transition: Bounce,
-      });
-      return;
-    }
     try {
       setLoading(true);
-      const res = await postData('/posts', { ...post, image }, token);
+      const res = await postData('/posts', { ...post, images }, token);
       if (res.success) {
         navigate('/profile');
       }
+      console.log(res);
     } catch (error) {
-      const message = error?.response?.data?.message || 'Something went wrong';
-      toast.error(message, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: `${darkMode ? 'dark' : 'light'}`,
-        transition: Bounce,
-      });
-      console.log(error);
+      // const messege = 'Something went wrong';
+      // toast.error(messege);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
-    if (!post.desc) {
+    if (
+      !post.title ||
+      !post.price ||
+      !post.address ||
+      !post.city ||
+      !post.longitude ||
+      images.length < 3 ||
+      !post.latitude
+    ) {
       setDisabled(true);
     } else {
       setDisabled(false);
     }
-  }, [post]);
-  useEffect(() => {
-    setDescription('Estate ammedities and services');
-  }, [setDescription]);
+  }, [post, images]);
   return (
     <Wrapper>
       <Left>
         <Container onSubmit={handleSubmit}>
-          <InputWrapper>
-            <Label>estate description*</Label>
-            <LabelSmall>short description of the area?</LabelSmall>
-            <TextArea
-              name='desc'
-              value={post.desc}
-              onChange={onChange}
-              placeholder='estate description'
-            />
-          </InputWrapper>
+          <Item>
+            <InputWrapper>
+              <Label>title*</Label>
+              <Input
+                name='title'
+                value={post.title}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>price*</Label>
+              <Input
+                name='price'
+                type='number'
+                value={post.price}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>address*</Label>
+              <Input
+                name='address'
+                value={post.address}
+                onChange={onChange}
+              />
+            </InputWrapper>
+          </Item>
+          <TextArea
+            name='desc'
+            value={post.desc}
+            onChange={onChange}
+            placeholder='description'
+          />
+          <Item className='small'>
+            <InputWrapper>
+              <Label>city*</Label>
+              <Input
+                name='city'
+                value={post.city}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>bedroom number*</Label>
+              <Input
+                name='bedrooms'
+                type='number'
+                value={post.bedrooms}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>bathroom number*</Label>
+              <Input
+                name='bathrooms'
+                type='number'
+                value={post.bathrooms}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>latitude*</Label>
+              <Input
+                name='latitude'
+                type='number'
+                value={post.latitude}
+                onChange={onChange}
+              />
+            </InputWrapper>
+            <InputWrapper>
+              <Label>longitude*</Label>
+              <Input
+                name='longitude'
+                type='number'
+                value={post.longitude}
+                onChange={onChange}
+              />
+            </InputWrapper>
+          </Item>
           <Item className='small'>
             <InputWrapper>
               <Label>income policy</Label>
@@ -255,23 +327,35 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
                 <Option>pet are not allowed</Option>
               </Select>
             </InputWrapper>
+            <InputWrapper>
+              <Label>Type</Label>
+              <Select
+                name='type'
+                value={post.type}
+                onChange={onChange}
+              >
+                <Option>rent</Option>
+                <Option>buy</Option>
+              </Select>
+            </InputWrapper>
           </Item>
-          <ButtonWrapper>
-            <Button
-              type='button'
-              onClick={() => setIndex(0)}
-            >
-              prev
-            </Button>
+          <InputWrapper>
             <Button disabled={disabled || loading}>
               {' '}
-              {loading ? <LoadingAnimation /> : 'register estate'}{' '}
+              {loading ? 'loading' : 'submit'}{' '}
             </Button>
-          </ButtonWrapper>
+          </InputWrapper>
         </Container>
       </Left>
+      <Right>
+        <DropZone
+          description='drag and drop (3) files here or'
+          setFiles={setImages}
+        />
+        <FileViewer images={images} />
+      </Right>
     </Wrapper>
   );
 };
 
-export default StepTwo;
+export default NewRoom;

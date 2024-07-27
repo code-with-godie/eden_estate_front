@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdKeyboardArrowLeft } from 'react-icons/md';
 import { MdKeyboardArrowRight } from 'react-icons/md';
-import { useSwiper } from 'swiper/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Slide from './Slide';
 import 'swiper/css';
-import { featuredEsate } from '../../data/data';
+import { Autoplay } from 'swiper/modules';
+
 import { IconButton } from '@mui/material';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../loading/LoadingAnimation';
@@ -74,6 +74,7 @@ const FeaturedPlaces = () => {
         <Swiper
           autoplay={{ delay: 2000 }}
           loop={true}
+          modules={[Autoplay]}
           spaceBetween={10}
           breakpoints={{
             480: {

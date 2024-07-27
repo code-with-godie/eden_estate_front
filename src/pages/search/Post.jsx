@@ -85,7 +85,7 @@ const IconWrapper = styled.div`
   }
 `;
 const Post = ({
-  images,
+  image,
   bedrooms,
   bathrooms,
   address,
@@ -128,7 +128,7 @@ const Post = ({
       onClick={() => navigate(`/p/${_id}`)}
     >
       <Left>
-        <Image src={images[0]} />
+        <Image src={image} />
       </Left>
       <Right>
         <Title> {title} </Title>

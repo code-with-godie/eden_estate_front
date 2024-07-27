@@ -45,7 +45,7 @@ const DropZone = ({ setFiles, single, description }) => {
         };
       });
     },
-    [setFiles]
+    [setFiles, single]
   );
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: 'image/*',

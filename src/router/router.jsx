@@ -12,6 +12,7 @@ import Search from '../pages/search/Search';
 import ProtectedLayout from './layout/ProtectedLayout';
 import CreatePost from '../pages/new/CreatePost';
 import UpdateUser from '../pages/update/UpdateDetails';
+import NewRoom from '../pages/new/NewRoom';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -25,6 +26,7 @@ export const router = createBrowserRouter([
         path: '/contacts',
         element: <Contacts />,
       },
+
       {
         path: '/p/:postID',
         element: <SinglePost />,
@@ -66,6 +68,10 @@ export const router = createBrowserRouter([
           {
             path: '/update/details',
             element: <UpdateUser />,
+          },
+          {
+            path: '/new/room/:hotelId',
+            element: <NewRoom />,
           },
         ],
       },

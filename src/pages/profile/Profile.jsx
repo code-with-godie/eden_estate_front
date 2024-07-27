@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import Messeger from '../../components/messeger/Messeger';
-import { motion } from 'framer-motion';
 const Container = styled.div`
   display: flex;
   overflow: auto;
@@ -52,6 +51,7 @@ const Right = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
+  padding: 0.5rem 0 0.5rem 0;
   justify-content: space-between;
 `;
 const Title = styled.h3`

@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import DropZone from './DropZone';
-import FileViewer from './FileViewer';
-// import { toast } from 'react-toastify';
-import { postData } from '../../api/apiCalls';
-import { useAppContext } from '../../context/AppContextProvider';
-import { useNavigate } from 'react-router-dom';
+import { Close } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import StepOne from './StepOne';
+import StepTwo from './StepTwo';
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
+  gap: 0.5rem;
   flex-direction: column-reverse;
   @media screen and (min-width: 768px) {
     flex-direction: row;
@@ -16,101 +18,90 @@ const Wrapper = styled.div`
 `;
 const Left = styled.div`
   flex: 1;
-`;
-const Right = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  overflow: auto;
+  gap: 0.5rem;
+  padding-top: 1rem;
+`;
+const Right = styled.div`
+  display: none;
+  &.small {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: auto;
+  }
   @media screen and (min-width: 768px) {
+    &.small {
+      display: none;
+    }
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow: auto;
     max-width: 400px;
   }
 `;
 
-const Container = styled.form`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
-const Item = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 0.5rem;
-  padding: 0.5rem;
-  &.small {
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  }
-`;
-const Input = styled.input`
-  min-width: 0 !important ;
-  flex: 1;
-  padding: 0.5rem;
-  border-radius: 0.3rem;
-  outline: none;
-  background: transparent;
-  border: 1px solid #aaaaaa;
-  color: inherit;
-`;
-const InputWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  gap: 0.3rem;
-`;
-const Label = styled.p``;
-const TextArea = styled.textarea`
-  flex: 1;
-  border-radius: 0.3rem;
-  outline: none;
-  background: transparent;
-  border: 1px solid #aaaaaa;
-  color: inherit;
-  min-height: 200px;
-  resize: vertical;
-`;
-const Button = styled.button`
-  padding: 0.5rem 1rem;
-  border: none;
-  outline: none;
-  background: var(--faded_blue);
-  cursor: pointer;
-  font-size: 1rem;
+const Title = styled.h2`
   text-transform: capitalize;
-  :disabled {
-    cursor: not-allowed;
-    color: gray;
-    background-color: #00000068;
+  font-size: 1.5rem;
+  color: var(--faded_blue);
+  padding-bottom: 0.6rem;
+`;
+const SmallTitle = styled.h4`
+  text-transform: capitalize;
+  font-size: 1rem;
+  color: var(--faded_blue);
+`;
+const Description = styled.p`
+  color: #a6a5a5bf;
+  font-style: oblique;
+`;
+const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  .btn {
+    position: absolute;
+    z-index: 100;
+    right: 10px;
+    top: 10px;
+    background-color: white;
+    :hover {
+      background-color: #ffffffcd;
+    }
   }
 `;
-const Select = styled.select`
-  padding: 0.5rem;
-  background: transparent;
-  outline: none;
-  border: none;
-  flex: 1;
-  min-width: 0 !important;
-  font-size: 1rem;
-  color: ${props => props.theme.color_primary};
-  border: 1px solid #a6a5a5bf;
+const Image = styled.img`
+  object-fit: contain;
+  width: 100%;
+  height: auto;
+  /* max-width: 300px; */
+  max-height: 50vh;
   border-radius: 0.5rem;
 `;
-const Option = styled.option``;
 const CreatePost = () => {
-  const [images, setImages] = useState([]);
-  const [disabled, setDisabled] = useState(true);
-  const { token } = useAppContext();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+  const [desc, setDescription] = useState('Estate name and location details');
+  const [index, setIndex] = useState(0);
   const [post, setPost] = useState({
     title: '',
     price: '',
-    address: '',
+    country: '',
+    state: '',
     city: '',
-    bedrooms: 1,
-    bathrooms: 1,
-    longitude: '',
-    latitude: '',
+    location: '',
+    coodinates: {
+      longitude: -12.877473,
+      latitude: 13.66432442,
+    },
     income: '',
     size: '',
     school: '',
@@ -121,239 +112,82 @@ const CreatePost = () => {
     pet: 'pet are allowed',
     type: 'rent',
     desc: '',
-    images,
+    image,
   });
 
-  const onChange = e => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setPost(prev => ({ ...prev, [name]: value }));
-  };
-  const handleSubmit = async e => {
-    e.preventDefault();
-    try {
-      setLoading(true);
-      const res = await postData('/posts', { ...post, images }, token);
-      if (res.success) {
-        navigate('/profile');
-      }
-      console.log(res);
-    } catch (error) {
-      // const messege = 'Something went wrong';
-      // toast.error(messege);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (
-      !post.title ||
-      !post.price ||
-      !post.address ||
-      !post.city ||
-      !post.longitude ||
-      images.length < 3 ||
-      !post.latitude
-    ) {
-      setDisabled(true);
-    } else {
-      setDisabled(false);
-    }
-  }, [post, images]);
   return (
     <Wrapper>
       <Left>
-        <Container onSubmit={handleSubmit}>
-          <Item>
-            <InputWrapper>
-              <Label>title*</Label>
-              <Input
-                name='title'
-                value={post.title}
-                onChange={onChange}
+        <Title>Bring your estate online </Title>
+        <Description>
+          just a few step and you join million of lardlords all across th globe
+        </Description>
+        <SmallTitle> {desc} </SmallTitle>
+        <Right className='small'>
+          {image ? (
+            <ImageContainer>
+              <Image
+                src={image}
+                alt='hotel image'
               />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>price*</Label>
-              <Input
-                name='price'
-                type='number'
-                value={post.price}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>address*</Label>
-              <Input
-                name='address'
-                value={post.address}
-                onChange={onChange}
-              />
-            </InputWrapper>
-          </Item>
-          <TextArea
-            name='desc'
-            value={post.desc}
-            onChange={onChange}
-            placeholder='description'
-          />
-          <Item className='small'>
-            <InputWrapper>
-              <Label>city*</Label>
-              <Input
-                name='city'
-                value={post.city}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>bedroom number*</Label>
-              <Input
-                name='bedrooms'
-                type='number'
-                value={post.bedrooms}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>bathroom number*</Label>
-              <Input
-                name='bathrooms'
-                type='number'
-                value={post.bathrooms}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>latitude*</Label>
-              <Input
-                name='latitude'
-                type='number'
-                value={post.latitude}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>longitude*</Label>
-              <Input
-                name='longitude'
-                type='number'
-                value={post.longitude}
-                onChange={onChange}
-              />
-            </InputWrapper>
-          </Item>
-          <Item className='small'>
-            <InputWrapper>
-              <Label>income policy</Label>
-              <Input
-                name='income'
-                value={post.income}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>total size(sqrt)</Label>
-              <Input
-                name='size'
-                type='number'
-                value={post.size}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>School (distance)</Label>
-              <Input
-                name='school'
-                type='number'
-                value={post.school}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>Bus(distance) </Label>
-              <Input
-                name='bus'
-                type='number'
-                value={post.bus}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>Restaraunt(distance) </Label>
-              <Input
-                name='restaurant'
-                type='number'
-                value={post.restaurant}
-                onChange={onChange}
-              />
-            </InputWrapper>
-          </Item>
-          <Item className='small'>
-            <InputWrapper>
-              <Label>property*</Label>
-              <Select
-                name='property'
-                value={post.property}
-                onChange={onChange}
+              <IconButton
+                onClick={() => setImage(null)}
+                className='btn'
               >
-                <Option>apartment</Option>
-                <Option>house</Option>
-                <Option>condo</Option>
-                <Option>land</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
-              <Label>utility policies</Label>
-              <Select
-                name='utilities'
-                value={post.utilities}
-                onChange={onChange}
-              >
-                <Option>Owner is responsible</Option>
-                <Option>Tenant are responsible</Option>
-                <Option>shared</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
-              <Label>pet policies</Label>
-              <Select
-                name='pet'
-                value={post.pet}
-                onChange={onChange}
-              >
-                <Option>pet are allowed</Option>
-                <Option>pet are not allowed</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
-              <Label>Type</Label>
-              <Select
-                name='type'
-                value={post.type}
-                onChange={onChange}
-              >
-                <Option>rent</Option>
-                <Option>buy</Option>
-              </Select>
-            </InputWrapper>
-          </Item>
-          <InputWrapper>
-            <Button disabled={disabled || loading}>
-              {' '}
-              {loading ? 'loading' : 'submit'}{' '}
-            </Button>
-          </InputWrapper>
+                <Close />
+              </IconButton>
+            </ImageContainer>
+          ) : (
+            <DropZone
+              description='drag and drop a file here or'
+              single
+              setFiles={setImage}
+            />
+          )}
+        </Right>
+        <Container>
+          {index === 0 ? (
+            <StepOne
+              post={post}
+              setPost={setPost}
+              setDescription={setDescription}
+              setIndex={setIndex}
+            />
+          ) : (
+            <StepTwo
+              post={post}
+              setDescription={setDescription}
+              setPost={setPost}
+              image={image}
+              setIndex={setIndex}
+            />
+          )}
         </Container>
       </Left>
       <Right>
-        <DropZone
-          description='drag and drop (3) files here or'
-          setFiles={setImages}
-        />
-        <FileViewer images={images} />
+        {image ? (
+          <ImageContainer>
+            <Image
+              src={image}
+              alt='hotel image'
+            />
+            <IconButton
+              onClick={() => setImage(null)}
+              className='btn'
+            >
+              <Close />
+            </IconButton>
+          </ImageContainer>
+        ) : (
+          <DropZone
+            description='drag and drop a file here or'
+            single
+            setFiles={setImage}
+          />
+        )}
+        {/* <FileViewer images={image} /> */}
       </Right>
+      <ToastContainer />
     </Wrapper>
   );
 };
