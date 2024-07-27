@@ -19,22 +19,9 @@ const Wrapper = styled.main`
 `;
 const Container = styled.section`
   flex: 1;
-  max-width: 1000px;
+  max-width: 1200px;
   padding: 0.5rem;
   overflow-x: hidden;
-`;
-const WhiteBackground = styled.div`
-  position: absolute;
-  width: 100vw;
-  top: 4rem;
-  left: 3rem;
-  height: 100vh;
-  max-width: 300px;
-  z-index: 10;
-  max-height: 300px;
-  filter: blur(150px);
-  background-color: ${props => props.theme.bg_ovarlay};
-  border-radius: 50%;
 `;
 const RootLayout = () => {
   const [showModel, setShowModel] = useState(false);

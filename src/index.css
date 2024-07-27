@@ -8,6 +8,7 @@
   --main_white: #ffffff;
   --bg_ovarlay: #ffffffbe;
   --bg_ovarlay_black: #00000066;
+  --color_faded_dark: #181818;
 }
 * {
   padding: 0;

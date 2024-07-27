@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import { Avatar } from '@mui/material';
 import PostList from '../search/PostList';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import Messeger from '../../components/messeger/Messeger';
@@ -26,6 +26,7 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  overflow: auto;
 `;
 const Right = styled.div`
   flex: 1;
@@ -86,16 +87,30 @@ const Label = styled.p`
 `;
 
 const Profile = () => {
-  const { user, logout, showChat } = useAppContext();
+  const { user: loggedInUser, logout, showChat } = useAppContext();
+  const [user, setUser] = useState({});
+
   const navigate = useNavigate();
+  const {
+    state: { userID },
+  } = useLocation();
+  const {
+    data: userData,
+    loading: userLoading,
+    error: userError,
+  } = useFetch(`/users/single/${userID}`);
+
   const [posts, setPosts] = useState([]);
   const [savedPosts, setSavedPosts] = useState([]);
-  const { data, loading, error } = useFetch('/posts');
+  const { data, loading, error } = useFetch(`/posts/profile/${userID}`);
   const {
     data: savedData,
     loading: savedLoading,
     error: savedError,
-  } = useFetch('/posts/saved');
+  } = useFetch(`/posts/saved/${userID}`);
+  const handleMessege = () => {
+    console.log('send messege');
+  };
 
   useEffect(() => {
     data && setPosts(data?.posts);
@@ -103,12 +118,24 @@ const Profile = () => {
   useEffect(() => {
     savedData && setSavedPosts(savedData?.posts);
   }, [savedData]);
+  useEffect(() => {
+    userData && setUser(userData?.user);
+  }, [userData]);
+
+  if (userLoading) {
+    return <LoadingAnimation />;
+  }
+  if (userError) {
+    return <p> {error?.message} </p>;
+  }
   return (
     <Container>
       <Left>
         <Header>
           <Title>user information</Title>
-          <Button onClick={() => navigate('/update/details')}>update</Button>
+          {loggedInUser?._id === userID && (
+            <Button onClick={() => navigate('/update/details')}>update</Button>
+          )}
         </Header>
         <UserInfo>
           <UserItem>
@@ -131,12 +158,25 @@ const Profile = () => {
             <Label> {user?.email} </Label>
           </UserItem>
           <UserItem>
-            <Button onClick={logout}>logout</Button>
+            {loggedInUser?._id === userID && (
+              <Button onClick={logout}>logout</Button>
+            )}
           </UserItem>
         </UserInfo>
         <Header>
-          <Title>my list</Title>
-          <Button onClick={() => navigate('/new/post')}>create new post</Button>
+          <Title>
+            {' '}
+            {loggedInUser?._id === userID
+              ? 'my list'
+              : ` ${user?.username} estate lists`}
+          </Title>
+          {loggedInUser?._id === userID ? (
+            <Button onClick={() => navigate('/new/post')}>
+              create new post
+            </Button>
+          ) : (
+            <Button onClick={handleMessege}>message</Button>
+          )}
         </Header>
         {error ? (
           <p>could not load posts</p>

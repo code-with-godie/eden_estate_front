@@ -204,7 +204,11 @@ const Topnav = ({ setShowModel }) => {
             <UserDetailsContainer
               initial='initial'
               animate='animate'
-              onClick={() => navigate('/profile')}
+              onClick={() =>
+                navigate(`/profile/${user?.username}`, {
+                  state: { userID: user?._id },
+                })
+              }
             >
               <Avatar
                 initial='initial'

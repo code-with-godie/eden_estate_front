@@ -88,7 +88,10 @@ const Post = ({
   image,
   bedrooms,
   bathrooms,
-  address,
+  location,
+  city,
+  state,
+  country,
   title,
   price,
   _id,
@@ -133,9 +136,10 @@ const Post = ({
       <Right>
         <Title> {title} </Title>
         <Address>
-          {' '}
           <LocationOnOutlined className='icon' />
-          {address}
+          {`${location}, ${
+            city === state ? state : `${city},${state}`
+          },${country}`}
         </Address>
         <Price> Kshs. {price} </Price>
         <FooterContainer>

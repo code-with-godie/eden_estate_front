@@ -43,8 +43,12 @@ const Wrapper = styled.div`
   border-radius: 0.5rem;
   color: #000000da;
   padding: 0.5rem;
-  background-color: ${props => props.darkMode && 'var(--faded_blue)'};
-  border: ${props => !props.darkMode && '1px solid gray'};
+  &.dark {
+    background-color: var(--color_faded_dark);
+  }
+  &.light {
+    box-shadow: 0px 0px 5px 3px #f2f1f1;
+  }
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
@@ -65,8 +69,12 @@ const Control = styled.div`
   padding: 0.5rem;
   color: black;
   justify-content: space-between;
-  background-color: ${props => props.darkMode && 'var(--faded_blue)'};
-  border: ${props => !props.darkMode && '1px solid gray'};
+  &.dark {
+    background-color: var(--color_faded_dark);
+  }
+  &.light {
+    box-shadow: 0px 0px 5px 3px #f2f1f1;
+  }
 `;
 const SingleDescription = ({
   utilities,
@@ -83,10 +91,7 @@ const SingleDescription = ({
   return (
     <Container>
       <Title>General</Title>
-      <Wrapper
-        darkMode={darkMode}
-        className='first'
-      >
+      <Wrapper className={darkMode ? 'dark first' : 'light first'}>
         <Item>
           <Icon src={utilitiesImage} />
           <ItemWrapper>
@@ -110,7 +115,7 @@ const SingleDescription = ({
         </Item>
       </Wrapper>
       <Title>sizes</Title>
-      <Wrapper darkMode={darkMode}>
+      <Wrapper className={darkMode ? 'dark' : 'light'}>
         <Item>
           <Icon src={squareImage} />
           <Label> {size} sqft</Label>
@@ -126,7 +131,7 @@ const SingleDescription = ({
       </Wrapper>
 
       <Title>Nearby places</Title>
-      <Wrapper darkMode={darkMode}>
+      <Wrapper className={darkMode ? 'dark' : 'light'}>
         <Item>
           <Icon src={schoolImage} />
           <ItemWrapper>
@@ -150,12 +155,12 @@ const SingleDescription = ({
         </Item>
       </Wrapper>
       <Title>Location</Title>
-      <Wrapper darkMode={darkMode}>
+      <Wrapper className={darkMode ? 'dark' : 'light'}>
         <MapContainer>
           <Map />
         </MapContainer>
       </Wrapper>
-      <Control darkMode={darkMode}>
+      <Control className={darkMode ? 'dark' : 'light'}>
         <Item>
           <Icon src={chat} />
           <Label>send a message</Label>

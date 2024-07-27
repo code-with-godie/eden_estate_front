@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import image from '../../assets/bg2.jpeg';
-import otherImages from '../../assets/bg3.jpeg';
+
 import { LocationOnOutlined } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import SingleDescription from './SingleDescription';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
+import Rooms from './Rooms';
+import { useAppContext } from '../../context/AppContextProvider';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  overflow: auto;
   @media screen and (min-width: 768px) {
+    height: 100%;
     flex-direction: row;
   }
 `;
 const Right = styled.div`
   flex: 1;
+  /* position: sticky; */
+  top: 50px;
   @media screen and (min-width: 768px) {
     max-width: 400px;
   }
@@ -26,6 +31,7 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  overflow: auto;
 `;
 const Top = styled.div`
   display: flex;
@@ -81,14 +87,17 @@ const TitleContainer = styled.div`
 const UserContainer = styled.div`
   align-self: flex-start;
 `;
-const Title = styled.h1``;
+const Title = styled.h1`
+  color: var(--faded_blue);
+`;
 const Address = styled.p`
   display: flex;
   align-items: center;
 `;
-const Price = styled.h3`
+const LableContainer = styled.ul``;
+const Label = styled.li`
   padding: 0.3rem;
-  background-color: var(--faded_blue);
+  /* background-color: var(--faded_blue); */
   align-self: flex-start;
 `;
 const Description = styled.p`
@@ -101,18 +110,29 @@ const User = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+  cursor: pointer;
   align-items: center;
-  background-color: var(--faded_blue);
+  &.dark {
+    background-color: var(--color_faded_dark);
+  }
+  &.light {
+    box-shadow: 0px 0px 5px 3px #f2f1f1;
+  }
+  /* background-color: var(--faded_blue); */
   .profile {
     width: 50px;
     height: 50px;
   }
 `;
-const Name = styled.p``;
+const Name = styled.p`
+  color: var(--faded_blue);
+`;
 const SinglePost = () => {
   const [post, setPost] = useState();
   const { postID } = useParams();
+  const { darkMode } = useAppContext();
   const { data, loading, error } = useFetch(`/posts/find/${postID}`);
+  const navigate = useNavigate();
 
   useEffect(() => {
     data && setPost(data?.post);
@@ -143,12 +163,26 @@ const SinglePost = () => {
               <Address>
                 {' '}
                 <LocationOnOutlined className='icon' />
-                {post?.address}
+                {`${post?.location}, ${
+                  post?.city === post?.state
+                    ? post?.state
+                    : `${post?.city},${post?.state}`
+                },${post?.country}`}
               </Address>
-              <Price> Kshs. {post?.price} /month </Price>
+              <LableContainer>
+                <Label> available for : {post?.type} </Label>
+                <Label> property type : {post?.property} </Label>
+              </LableContainer>
             </TitleContainer>
             <UserContainer>
-              <User>
+              <User
+                className={darkMode ? 'dark' : 'light'}
+                onClick={() =>
+                  navigate(`/profile/@${post?.user?.username}`, {
+                    state: { userID: post?.user?._id },
+                  })
+                }
+              >
                 <Avatar
                   src={post?.user?.avatar}
                   alt={post?.user?.username}
@@ -159,6 +193,10 @@ const SinglePost = () => {
             </UserContainer>
           </TitleWrapper>
           <Description>{post?.desc}</Description>
+          <Rooms
+            title={post?.title}
+            estateID={post?._id}
+          />
         </Bottom>
       </Left>
       <Right>
