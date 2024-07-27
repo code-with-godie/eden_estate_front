@@ -205,7 +205,7 @@ const Topnav = ({ setShowModel }) => {
               initial='initial'
               animate='animate'
               onClick={() =>
-                navigate(`/profile/${user?.username}`, {
+                navigate(`/profile/@${user?.username}`, {
                   state: { userID: user?._id },
                 })
               }

@@ -79,7 +79,9 @@ const Sidenav = ({ setShowModel }) => {
     closeDrawer();
   };
   const handleProfile = () => {
-    navigate('/profile');
+    navigate(`/profile/@${user?.username}`, {
+      state: { userID: user?._id },
+    });
     closeDrawer();
   };
   const handleClick = () => {

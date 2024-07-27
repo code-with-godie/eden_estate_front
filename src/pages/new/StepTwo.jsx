@@ -4,7 +4,7 @@ import { useAppContext } from '../../context/AppContextProvider';
 import { useNavigate } from 'react-router-dom';
 import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { postData } from '../../api/apiCalls';
+import { postData, updateData } from '../../api/apiCalls';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 
 const Wrapper = styled.div`
@@ -97,7 +97,7 @@ const Select = styled.select`
   border-radius: 0.5rem;
 `;
 const Option = styled.option``;
-const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
+const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const { token } = useAppContext();
@@ -110,21 +110,46 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
   };
   const handleSubmit = async e => {
     e.preventDefault();
-    if (!image) {
-      toast.error('estate image is required', {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: `${darkMode ? 'dark' : 'light'}`,
-        transition: Bounce,
-      });
-      return;
-    }
     try {
+      if (!image) {
+        toast.error('estate image is required', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: `${darkMode ? 'dark' : 'light'}`,
+          transition: Bounce,
+        });
+        return;
+      }
+      if (edit) {
+        const res = await updateData(
+          `/posts/update/${post?._id}`,
+          { ...post, image },
+          token
+        );
+        if (res.success) {
+          toast.success('estate successfully updated', {
+            position: 'top-right',
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: `${darkMode ? 'dark' : 'light'}`,
+            transition: Bounce,
+          });
+          setTimeout(() => {
+            navigate(`/p/${res?.post?._id}`);
+          }, 3300);
+        }
+        return;
+      }
+
       setLoading(true);
       const res = await postData('/posts', { ...post, image }, token);
       if (res.success) {
@@ -265,7 +290,13 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image }) => {
             </Button>
             <Button disabled={disabled || loading}>
               {' '}
-              {loading ? <LoadingAnimation /> : 'register estate'}{' '}
+              {loading ? (
+                <LoadingAnimation />
+              ) : edit ? (
+                'update estate'
+              ) : (
+                'register estate'
+              )}{' '}
             </Button>
           </ButtonWrapper>
         </Container>

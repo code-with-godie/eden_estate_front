@@ -40,6 +40,10 @@ export const router = createBrowserRouter([
         element: <About />,
       },
       {
+        path: '/profile/:username',
+        element: <Profile />,
+      },
+      {
         path: '/',
         element: <AuthLayout />,
         children: [
@@ -57,10 +61,6 @@ export const router = createBrowserRouter([
         path: '/',
         element: <ProtectedLayout />,
         children: [
-          {
-            path: '/profile/:username',
-            element: <Profile />,
-          },
           {
             path: '/new/post',
             element: <CreatePost />,

@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DropZone from './DropZone';
-import { Close } from '@mui/icons-material';
+import { Close, Update } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
+import { useLocation } from 'react-router-dom';
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
@@ -89,6 +90,8 @@ const Image = styled.img`
 `;
 const CreatePost = () => {
   const [image, setImage] = useState(null);
+  const location = useLocation();
+  const [edit, setEdit] = useState(false);
   const [desc, setDescription] = useState('Estate name and location details');
   const [index, setIndex] = useState(0);
   const [post, setPost] = useState({
@@ -115,6 +118,17 @@ const CreatePost = () => {
     image,
   });
 
+  useEffect(() => {
+    console.log(location);
+    if (location?.state?.post) {
+      let { post, update } = location.state;
+      const { user, ...tempPost } = post;
+      post = { ...tempPost };
+      setEdit(update);
+      setPost(post);
+      setImage(post?.image);
+    }
+  }, [location]);
   return (
     <Wrapper>
       <Left>
@@ -159,6 +173,7 @@ const CreatePost = () => {
               setDescription={setDescription}
               setPost={setPost}
               image={image}
+              edit={edit}
               setIndex={setIndex}
             />
           )}

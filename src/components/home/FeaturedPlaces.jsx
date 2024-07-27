@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { MdKeyboardArrowLeft } from 'react-icons/md';
-import { MdKeyboardArrowRight } from 'react-icons/md';
+// import { MdKeyboardArrowLeft } from 'react-icons/md';
+// import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Slide from './Slide';
 import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
 
-import { IconButton } from '@mui/material';
+// import { IconButton } from '@mui/material';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../loading/LoadingAnimation';
 const Container = styled.div`
@@ -61,6 +61,7 @@ const Wrapper = styled.div`
 const FeaturedPlaces = () => {
   const [featured, setFeatured] = useState([]);
   const { data, loading, error } = useFetch('/posts/featured');
+  // const swiper = useSwiper();
   useEffect(() => {
     data && setFeatured(data.posts);
   }, [data]);
@@ -97,21 +98,21 @@ const FeaturedPlaces = () => {
               <Slide {...item} />
             </SwiperSlide>
           ))}
+          {/* <IconButton
+            className='btn left'
+            onClick={() => swiper?.slidePrev()}
+          >
+            {' '}
+            <MdKeyboardArrowLeft />{' '}
+          </IconButton>
+          <IconButton
+            className='btn right'
+            onClick={() => swiper?.slideNext()}
+          >
+            {' '}
+            <MdKeyboardArrowRight />{' '}
+          </IconButton> */}
         </Swiper>
-        <IconButton
-          className='btn left'
-          // onClick={() => swiper.slidePrev()}
-        >
-          {' '}
-          <MdKeyboardArrowLeft />{' '}
-        </IconButton>
-        <IconButton
-          className='btn right'
-          // onClick={() => swiper.slideNext()}
-        >
-          {' '}
-          <MdKeyboardArrowRight />{' '}
-        </IconButton>
       </Wrapper>
     </Container>
   );

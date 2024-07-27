@@ -14,6 +14,7 @@ import { updateData } from '../../api/apiCalls';
 import { motion } from 'framer-motion';
 const Container = styled(motion.div)`
   display: flex;
+  cursor: pointer;
   gap: 0.5rem;
 `;
 const Left = styled.div`

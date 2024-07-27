@@ -24,8 +24,10 @@ const Section = styled.article`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  border-bottom: 1px solid gray;
   padding: 0.5rem;
+  :not(:last-child) {
+    border-bottom: 1px solid gray;
+  }
 `;
 const Wrapper = styled.div`
   display: flex;

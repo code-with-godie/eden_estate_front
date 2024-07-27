@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 const ProtectedLayout = () => {
   const { user } = useAppContext();
-  return <>{user ? <Outlet /> : <Navigate to='/' />}</>;
+  return <>{user ? <Outlet /> : <Navigate to='/login' />}</>;
 };
 
 export default ProtectedLayout;

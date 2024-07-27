@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { LocationOnOutlined } from '@mui/icons-material';
+import { Edit, LocationOnOutlined } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 import SingleDescription from './SingleDescription';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -89,6 +89,7 @@ const UserContainer = styled.div`
 `;
 const Title = styled.h1`
   color: var(--faded_blue);
+  text-transform: capitalize;
 `;
 const Address = styled.p`
   display: flex;
@@ -127,10 +128,25 @@ const User = styled.div`
 const Name = styled.p`
   color: var(--faded_blue);
 `;
+const Button = styled.div`
+  border: none;
+  outline: none;
+  padding: 0.5rem 1rem;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  background-color: var(--faded_blue);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  text-transform: capitalize;
+`;
 const SinglePost = () => {
   const [post, setPost] = useState();
   const { postID } = useParams();
-  const { darkMode } = useAppContext();
+  const { darkMode, user } = useAppContext();
   const { data, loading, error } = useFetch(`/posts/find/${postID}`);
   const navigate = useNavigate();
 
@@ -175,21 +191,34 @@ const SinglePost = () => {
               </LableContainer>
             </TitleContainer>
             <UserContainer>
-              <User
-                className={darkMode ? 'dark' : 'light'}
-                onClick={() =>
-                  navigate(`/profile/@${post?.user?.username}`, {
-                    state: { userID: post?.user?._id },
-                  })
-                }
-              >
-                <Avatar
-                  src={post?.user?.avatar}
-                  alt={post?.user?.username}
-                  className='profile'
-                />
-                <Name> {post?.user?.username} </Name>
-              </User>
+              {user?._id === post?.user?._id ? (
+                <>
+                  <Button
+                    onClick={() =>
+                      navigate('/new/post', { state: { update: true, post } })
+                    }
+                  >
+                    {' '}
+                    <Edit /> edit estate{' '}
+                  </Button>
+                </>
+              ) : (
+                <User
+                  className={darkMode ? 'dark' : 'light'}
+                  onClick={() =>
+                    navigate(`/profile/@${post?.user?.username}`, {
+                      state: { userID: post?.user?._id },
+                    })
+                  }
+                >
+                  <Avatar
+                    src={post?.user?.avatar}
+                    alt={post?.user?.username}
+                    className='profile'
+                  />
+                  <Name> {post?.user?.username} </Name>
+                </User>
+              )}
             </UserContainer>
           </TitleWrapper>
           <Description>{post?.desc}</Description>
