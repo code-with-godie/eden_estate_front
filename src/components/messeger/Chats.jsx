@@ -1,8 +1,12 @@
 import { Close, Send } from '@mui/icons-material';
-import { Avatar, duration, IconButton } from '@mui/material';
-import React from 'react';
+import { Avatar, IconButton } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { useAppContext } from '../../context/AppContextProvider';
+import { appwriteService } from '../../appWrite/appwriteService';
+import LoadingAnimation from '../loading/LoadingAnimation';
+import MesssegeSkeleton from '../skeletons/MesssegeSkeleton';
 const Container = styled(motion.div)`
   position: absolute;
   bottom: 0;
@@ -45,7 +49,7 @@ const Messege = styled.p`
   max-width: 50%;
   align-self: flex-start;
   background-color: #aaaaaa1b;
-  :nth-child(even) {
+  &.mine {
     background-color: #0d0d0d52;
     align-self: flex-end;
     color: white;
@@ -76,50 +80,97 @@ const variants = {
   initial: { opacity: 0, y: '100%', transition: { duration: 1 } },
   animate: { opacity: 1, y: 0, transition: { duration: 1 } },
 };
-const Chats = ({ showChats, setShowChats }) => {
-  const handleSubmit = e => {
-    e.preventDefault();
+const Chats = () => {
+  const { conversation, setConversation, user, chats, setChats } =
+    useAppContext();
+  const [text, setText] = useState('');
+  const [loading, setLoading] = useState('');
+  const [error, setError] = useState('');
+  const handleConversation = () => {
+    setConversation(null);
   };
+  const getMesseges = useCallback(async () => {
+    try {
+      setLoading(true);
+      const sms = await appwriteService.getRoomMesseges(conversation?.roomID);
+      setChats(sms);
+    } catch (error) {
+      setError(error?.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [conversation, setChats]);
+  const handleSubmit = async e => {
+    e.preventDefault();
+    if (!text) return;
+
+    try {
+      const messege = {
+        body: text,
+        sender: user?._id,
+        receiver: conversation?._id,
+        room: conversation?.roomID,
+      };
+      const newMessege = await appwriteService.sendMessage(messege);
+      setChats(prev => [...prev, newMessege]);
+      setText('');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getMesseges();
+  }, [getMesseges]);
   return (
     <Container
       variants={variants}
       initial='initial'
-      animate={showChats ? 'animate' : 'initial'}
+      animate={conversation ? 'animate' : 'initial'}
     >
       <Header>
         <ProfileContainer>
-          <Avatar />
-          <UserName>john doe</UserName>
+          <Avatar
+            src={conversation?.avatar}
+            alt={conversation?.username}
+          />
+          <UserName>{conversation?.username} </UserName>
         </ProfileContainer>
-        <IconButton onClick={() => setShowChats(false)}>
+        <IconButton onClick={handleConversation}>
           <Close />
         </IconButton>
       </Header>
-      <ChatsContainer>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-        <Messege>test messege</Messege>
-      </ChatsContainer>
+      {loading ? (
+        <MesssegeSkeleton />
+      ) : error ? (
+        <ChatsContainer>
+          <p> {error} </p>
+        </ChatsContainer>
+      ) : (
+        <ChatsContainer>
+          {chats.length === 0 ? (
+            <Messege>be the first to send a messege</Messege>
+          ) : (
+            <>
+              {chats.map(item => (
+                <Messege
+                  className={item?.sender === user?._id && 'mine'}
+                  key={item?.$id}
+                >
+                  {' '}
+                  {item?.body}{' '}
+                </Messege>
+              ))}
+            </>
+          )}
+        </ChatsContainer>
+      )}
       <Footer onSubmit={handleSubmit}>
         <InputContainer>
-          <Input placeholder='write messege' />
+          <Input
+            value={text}
+            onChange={e => setText(e.target.value)}
+            placeholder='write messege'
+          />
           <Button>
             <Send />
           </Button>

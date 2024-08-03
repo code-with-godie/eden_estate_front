@@ -6,7 +6,7 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 import logo from '../../assets/logo.png';
 import bar from '../../assets/menu.png';
 import { motion } from 'framer-motion';
-import { Home, Logout, Phone, SignpostOutlined } from '@mui/icons-material';
+import { Home, Phone, SignpostOutlined } from '@mui/icons-material';
 const Container = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
@@ -191,24 +191,10 @@ const Topnav = ({ setShowModel }) => {
       >
         {user ? (
           <>
-            <div
-              style={{ cursor: 'pointer' }}
-              initial='initial'
-              animate='animate'
-              className='link large'
-              onClick={() => setShowModel(true)}
-            >
-              <Logout />
-              Logout
-            </div>
             <UserDetailsContainer
               initial='initial'
               animate='animate'
-              onClick={() =>
-                navigate(`/profile/@${user?.username}`, {
-                  state: { userID: user?._id },
-                })
-              }
+              onClick={() => setShowModel(prev => !prev)}
             >
               <Avatar
                 initial='initial'

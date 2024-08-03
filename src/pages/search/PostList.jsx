@@ -11,7 +11,7 @@ const PostContainer = styled(motion.div)`
     overflow: auto;
   }
 `;
-const PostList = ({ posts, scroll }) => {
+const PostList = ({ posts, scroll, handleMessege }) => {
   const variants = {
     initial: { opacity: 0 },
     animate: { opacity: 1, transition: { staggerChildren: 1 } },
@@ -25,6 +25,7 @@ const PostList = ({ posts, scroll }) => {
     >
       {posts.map(item => (
         <Post
+          handleMessege={handleMessege}
           variants={variants}
           key={item._id}
           {...item}

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useState } from 'react';
 import LogoutModel from '../../components/nav/LogoutModel';
 import Footer from './Footer';
+import AccountModel from '../../components/nav/AccountModel';
 
 const Wrapper = styled.main`
   display: flex;
@@ -13,7 +14,7 @@ const Wrapper = styled.main`
   width: 100%;
   position: relative;
   overflow: auto;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   color: ${props => props.theme.color_primary};
   background: ${props => props.theme.bg_primary};
 `;
@@ -25,11 +26,12 @@ const Container = styled.section`
 `;
 const RootLayout = () => {
   const [showModel, setShowModel] = useState(false);
+  const [showAccountModel, setShowAccountModel] = useState(false);
   return (
     <Wrapper>
       {/* <WhiteBackground /> */}
       <Container>
-        <Topnav setShowModel={setShowModel} />
+        <Topnav setShowModel={setShowAccountModel} />
         <Sidenav setShowModel={setShowModel} />
         <Outlet />
         <Footer />
@@ -37,6 +39,11 @@ const RootLayout = () => {
       <LogoutModel
         setShowModel={setShowModel}
         showModel={showModel}
+      />
+      <AccountModel
+        setShowModel={setShowAccountModel}
+        showModel={showAccountModel}
+        setLogoutModel={setShowModel}
       />
     </Wrapper>
   );

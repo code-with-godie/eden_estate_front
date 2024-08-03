@@ -3,11 +3,9 @@ import styled from 'styled-components';
 
 import { Edit, LocationOnOutlined } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
-import SingleDescription from './SingleDescription';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
-import Rooms from './Rooms';
 import { useAppContext } from '../../context/AppContextProvider';
 const Container = styled.div`
   display: flex;
@@ -18,20 +16,15 @@ const Container = styled.div`
     flex-direction: row;
   }
 `;
-const Right = styled.div`
-  flex: 1;
-  /* position: sticky; */
-  top: 50px;
-  @media screen and (min-width: 768px) {
-    max-width: 400px;
-  }
-`;
 const Left = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   overflow: auto;
+  @media screen and (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 const Top = styled.div`
   display: flex;
@@ -150,7 +143,7 @@ const Button = styled.div`
     z-index: 100;
   }
 `;
-const SinglePost = () => {
+const Booking = () => {
   const [post, setPost] = useState();
   const { postID } = useParams();
   const { darkMode, user } = useAppContext();
@@ -186,7 +179,7 @@ const SinglePost = () => {
               <Address>
                 {' '}
                 <LocationOnOutlined className='icon' />
-                {`${
+                {`${post?.location}, ${
                   post?.city === post?.state
                     ? post?.state
                     : `${post?.city},${post?.state}`
@@ -241,19 +234,10 @@ const SinglePost = () => {
               <Edit /> add a room{' '}
             </Button>
           )}
-          {post && (
-            <Rooms
-              title={post?.title}
-              estateID={post?._id}
-            />
-          )}
         </Bottom>
       </Left>
-      <Right>
-        <SingleDescription {...post} />
-      </Right>
     </Container>
   );
 };
 
-export default SinglePost;
+export default Booking;

@@ -4,6 +4,7 @@ import {
   BookmarkBorderOutlined,
   BookmarkOutlined,
   Chat,
+  Edit,
   LocationOnOutlined,
 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
@@ -85,23 +86,22 @@ const IconWrapper = styled.div`
     cursor: pointer;
   }
 `;
-const Post = ({
-  image,
-  bedrooms,
-  bathrooms,
-  location,
-  city,
-  state,
-  country,
-  title,
-  price,
-  _id,
-  variants,
-}) => {
+const Post = ({ handleMessege, variants, ...post }) => {
   const navigate = useNavigate();
+  const {
+    state,
+    user: postUser,
+    country,
+    title,
+    price,
+    _id,
+    image,
+    bedrooms,
+    bathrooms,
+    city,
+  } = post;
   const [bookmarked, setBookmarked] = useState(false);
   const { user, token, updateUser, openChat } = useAppContext();
-
   const handleBookmark = async e => {
     e.stopPropagation();
     if (!user) {
@@ -110,11 +110,6 @@ const Post = ({
     }
     const res = await updateData(`/users/bookmark/${_id}`, {}, token);
     updateUser(res.user);
-  };
-  const handleMessage = e => {
-    e.stopPropagation();
-    openChat();
-    navigate('/profile');
   };
   useEffect(() => {
     if (user) {
@@ -138,9 +133,7 @@ const Post = ({
         <Title> {title} </Title>
         <Address>
           <LocationOnOutlined className='icon' />
-          {`${location}, ${
-            city === state ? state : `${city},${state}`
-          },${country}`}
+          {`${city === state ? state : `${city},${state}`},${country}`}
         </Address>
         <Price> Kshs. {price} </Price>
         <FooterContainer>
@@ -165,12 +158,24 @@ const Post = ({
                 <BookmarkBorderOutlined className='icon' />
               )}
             </IconWrapper>
-            <IconWrapper
-              onClick={handleMessage}
-              className='icon-btn'
-            >
-              <Chat className='icon' />
-            </IconWrapper>
+
+            {postUser?._id === user?._id ? (
+              <IconWrapper
+                onClick={() =>
+                  navigate('/new/post', { state: { update: true, post } })
+                }
+                className='icon-btn'
+              >
+                <Edit className='icon' />
+              </IconWrapper>
+            ) : (
+              <IconWrapper
+                onClick={handleMessege}
+                className='icon-btn'
+              >
+                <Chat className='icon' />
+              </IconWrapper>
+            )}
           </FooterRight>
         </FooterContainer>
       </Right>

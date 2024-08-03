@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useLocation } from '../../hooks/useLocation';
+import { FormControl, MenuItem, Select } from '@mui/material';
+import { useAppContext } from '../../context/AppContextProvider';
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
@@ -61,20 +64,11 @@ const Button = styled.button`
     background-color: #00000068;
   }
 `;
-const Select = styled.select`
-  padding: 0.5rem;
-  background: transparent;
-  outline: none;
-  border: none;
-  flex: 1;
-  min-width: 0 !important;
-  font-size: 1rem;
-  color: ${props => props.theme.color_primary};
-  border: 1px solid #a6a5a5bf;
-  border-radius: 0.5rem;
-`;
-const Option = styled.option``;
 const StepOne = ({ post, setPost, setIndex, setDescription }) => {
+  const { countries, getCountryStates, getStatesCities } = useLocation();
+  const [states, setState] = useState([]);
+  const [cities, setCities] = useState([]);
+  const { darkMode } = useAppContext();
   const [disabled, setDisabled] = useState(false);
   const onChange = e => {
     const name = e.target.name;
@@ -87,8 +81,7 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
       !post.price ||
       !post.country ||
       !post.state ||
-      !post.city ||
-      !post.location
+      !post.city
     ) {
       setDisabled(true);
     } else {
@@ -98,6 +91,22 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
   useEffect(() => {
     setDescription('Estate name and location details');
   }, [setDescription]);
+  useEffect(() => {
+    if (post?.country) {
+      const state = getCountryStates(post?.country);
+      if (state) {
+        setState(state);
+      }
+    }
+  }, [post?.country, getCountryStates]);
+  useEffect(() => {
+    if (post?.state) {
+      const cities = getStatesCities(post?.country, post?.state);
+      if (cities) {
+        setCities(cities);
+      }
+    }
+  }, [post, getStatesCities]);
   return (
     <Wrapper>
       <Left>
@@ -125,42 +134,157 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
             <InputWrapper>
               <Label>estate country*</Label>
               <LabelSmall>which country is your estate located?</LabelSmall>
-              <Input
-                name='country'
-                value={post.country}
-                onChange={onChange}
-              />
+              <FormControl fullWidth>
+                <Select
+                  name='country'
+                  value={post?.country}
+                  onChange={onChange}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  {countries?.map(country => (
+                    <MenuItem
+                      key={country.isoCode}
+                      value={country.isoCode}
+                    >
+                      {' '}
+                      {country.name}{' '}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </InputWrapper>
             <InputWrapper>
               <Label>estate state*</Label>
               <LabelSmall>
                 which state/county is your estate located?
               </LabelSmall>
-              <Input
+              <Select
                 name='state'
-                value={post.state}
+                disabled={states.length <= 0}
+                value={post?.state}
                 onChange={onChange}
-              />
+                sx={{
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  color: () => (darkMode ? 'white' : 'black'),
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '& .MuiSelect-icon': {
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '& .MuiMenuItem-root': {
+                    backgroundColor: darkMode ? 'black' : '#fff',
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '&.Mui-disabled': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#9797973f',
+                    },
+                    backgroundColor: ' #9797973f',
+                    color: '#bfbebe',
+                    cursor: 'not-allowed',
+                    '& .MuiSelect-icon': {
+                      color: '#bfbebe60',
+                    },
+                  },
+                }}
+              >
+                {states?.map(state => (
+                  <MenuItem
+                    key={state.isoCode}
+                    value={state.isoCode}
+                  >
+                    {' '}
+                    {state.name}{' '}
+                  </MenuItem>
+                ))}
+              </Select>
             </InputWrapper>
           </Item>
           <Item className='small'>
             <InputWrapper>
               <Label>estate city*</Label>
               <LabelSmall>city location of this estate?</LabelSmall>
-              <Input
+              <Select
                 name='city'
-                value={post.city}
+                disabled={cities.length <= 0}
+                value={post?.city}
                 onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>estate location/town*</Label>
-              <LabelSmall>nearest town for your estate?</LabelSmall>
-              <Input
-                name='location'
-                value={post.location}
-                onChange={onChange}
-              />
+                sx={{
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  color: () => (darkMode ? 'white' : 'black'),
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '& .MuiSelect-icon': {
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '& .MuiMenuItem-root': {
+                    backgroundColor: darkMode ? 'black' : '#fff',
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '&.Mui-disabled': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#9797973f',
+                    },
+                    backgroundColor: ' #9797973f',
+                    color: '#bfbebe',
+                    cursor: 'not-allowed',
+                    '& .MuiSelect-icon': {
+                      color: '#bfbebe60',
+                    },
+                  },
+                }}
+              >
+                {cities?.map(city => (
+                  <MenuItem
+                    key={city.name}
+                    value={city.name}
+                  >
+                    {' '}
+                    {city.name}{' '}
+                  </MenuItem>
+                ))}
+              </Select>
             </InputWrapper>
             <InputWrapper>
               <Label>Type</Label>
@@ -168,10 +292,41 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               <Select
                 name='type'
                 value={post.type}
+                defaultValue='rent'
                 onChange={onChange}
+                sx={{
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  color: () => (darkMode ? 'white' : 'black'),
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (darkMode ? 'white' : 'gray'),
+                  },
+                  '& .MuiSelect-icon': {
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '& .MuiMenuItem-root': {
+                    backgroundColor: darkMode ? 'black' : '#fff',
+                    color: () => (darkMode ? 'white' : 'black'),
+                  },
+                  '&.Mui-disabled': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#9797973f',
+                    },
+                    backgroundColor: ' #9797973f',
+                    color: '#bfbebe',
+                    cursor: 'not-allowed',
+                    '& .MuiSelect-icon': {
+                      color: '#bfbebe60',
+                    },
+                  },
+                }}
               >
-                <Option>rent</Option>
-                <Option>buy</Option>
+                <MenuItem value='rent'>rent</MenuItem>
+                <MenuItem value='buy'>buy</MenuItem>
               </Select>
             </InputWrapper>
           </Item>

@@ -12,7 +12,7 @@ import resImage from '../../assets/restaurant.png';
 import chat from '../../assets/chat.png';
 import save from '../../assets/save.png';
 import { useAppContext } from '../../context/AppContextProvider';
-import Map from '../../components/Map';
+import Map from '../../components/map/Map';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -57,11 +57,8 @@ const Wrapper = styled.div`
   }
 `;
 const MapContainer = styled.div`
-  height: 150px;
-  .map {
-    width: 100%;
-    height: 100%;
-  }
+  width: 100%;
+  height: 250px;
 `;
 const Control = styled.div`
   display: flex;
@@ -83,6 +80,7 @@ const SingleDescription = ({
   size,
   bus,
   school,
+  coodinates,
   restaurant,
   bedrooms,
   bathrooms,
@@ -157,7 +155,10 @@ const SingleDescription = ({
       <Title>Location</Title>
       <Wrapper className={darkMode ? 'dark' : 'light'}>
         <MapContainer>
-          <Map />
+          <Map
+            single
+            posts={[{ coodinates }]}
+          />
         </MapContainer>
       </Wrapper>
       <Control className={darkMode ? 'dark' : 'light'}>

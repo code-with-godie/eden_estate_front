@@ -13,6 +13,7 @@ import ProtectedLayout from './layout/ProtectedLayout';
 import CreatePost from '../pages/new/CreatePost';
 import UpdateUser from '../pages/update/UpdateDetails';
 import NewRoom from '../pages/new/NewRoom';
+import Booking from '../pages/booking/Booking';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
         path: '/',
         element: <ProtectedLayout />,
         children: [
+          {
+            path: '/book',
+            element: <Booking />,
+          },
           {
             path: '/new/post',
             element: <CreatePost />,

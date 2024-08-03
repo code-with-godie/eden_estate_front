@@ -6,7 +6,7 @@ import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { postData, updateData } from '../../api/apiCalls';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
-import { useLocation } from '../../hooks/useLocation';
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,12 +26,9 @@ const Container = styled.form`
 `;
 const Item = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 0.5rem;
   padding: 0.5rem;
-  &.small {
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  }
 `;
 const Input = styled.input`
   min-width: 0 !important ;
@@ -98,31 +95,29 @@ const Select = styled.select`
   border-radius: 0.5rem;
 `;
 const Option = styled.option``;
-const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
+const RoomStepTwo = ({
+  post,
+  setPost,
+  setIndex,
+  setDescription,
+  image,
+  edit,
+}) => {
   const [disabled, setDisabled] = useState(false);
-  const { getCountryByCode, getStateByCode, getCityByName } = useLocation();
   const [loading, setLoading] = useState(false);
   const { token } = useAppContext();
   const { darkMode } = useAppContext();
   const navigate = useNavigate();
   const onChange = e => {
     const name = e.target.name;
-    const value = e.target.value;
+    const value = e.target.checked;
     setPost(prev => ({ ...prev, [name]: value }));
   };
   const handleSubmit = async e => {
     e.preventDefault();
     try {
-      console.log(post);
-      const country = getCountryByCode(post?.country);
-      const state = getStateByCode(post?.country, post?.state);
-      const city = getCityByName(post?.country, post?.state, post?.city);
-      if (city) {
-        const { longitude, latitude } = city;
-        post.coodinates = { longitude, latitude };
-      }
       if (!image) {
-        toast.error('estate image is required', {
+        toast.error('room image is required', {
           position: 'top-right',
           autoClose: 3000,
           hideProgressBar: false,
@@ -135,12 +130,10 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
         });
         return;
       }
-      setLoading(true);
-
       if (edit) {
         const res = await updateData(
-          `/posts/update/${post?._id}`,
-          { ...post, image, country: country.name, state: state.name },
+          `/room/update/${post?._id}`,
+          { ...post, image },
           token
         );
         if (res.success) {
@@ -162,13 +155,10 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
         return;
       }
 
-      const res = await postData(
-        '/posts',
-        { ...post, image, country: country.name, state: state.name },
-        token
-      );
+      setLoading(true);
+      const res = await postData('/rooms', { ...post, image }, token);
       if (res.success) {
-        navigate(`/p/${res?.post?._id}`);
+        navigate(`/p/${post?.estateID}`);
       }
     } catch (error) {
       const message = error?.response?.data?.message || 'Something went wrong';
@@ -196,105 +186,96 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
     }
   }, [post]);
   useEffect(() => {
-    setDescription('Estate ammedities and services');
+    setDescription(
+      'choose room amenities(optional)',
+      'what makes this room a good choice?'
+    );
   }, [setDescription]);
   return (
     <Wrapper>
       <Left>
         <Container onSubmit={handleSubmit}>
-          <InputWrapper>
-            <Label>estate description*</Label>
-            <LabelSmall>short description of the area?</LabelSmall>
-            <TextArea
-              name='desc'
-              value={post.desc}
-              onChange={onChange}
-              placeholder='estate description'
-            />
-          </InputWrapper>
-          <Item className='small'>
-            <InputWrapper>
-              <Label>income policy</Label>
-              <Input
-                name='income'
-                value={post.income}
+          <Item>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.wifi} />}
+                name='wifi'
+                onChange={onChange}
+                label='free wifi'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.conditional} />}
+                name='conditional'
+                onChange={onChange}
+                label='air conditional'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.roomService} />}
+                name='roomService'
+                onChange={onChange}
+                label='room services'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.breakFast} />}
+                name='breakFast'
+                onChange={onChange}
+                label='breakfast'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.tv} />}
+                name='tv'
+                onChange={onChange}
+                label='Tv'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.balcony} />}
+                name='balcony'
+                onChange={onChange}
+                label='balcony'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.ocean} />}
+                label='ocen view'
+                name='ocean'
                 onChange={onChange}
               />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>total size(sqrt)</Label>
-              <Input
-                name='size'
-                type='number'
-                value={post.size}
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.forest} />}
+                name='forest'
+                onChange={onChange}
+                label='forest view'
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.mountain} />}
+                label='mountain view'
+                name='mountain'
                 onChange={onChange}
               />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>School (distance)</Label>
-              <Input
-                name='school'
-                type='number'
-                value={post.school}
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox value={post?.soundProve} />}
+                label='sound prove'
+                name='soundProve'
                 onChange={onChange}
               />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>Bus(distance) </Label>
-              <Input
-                name='bus'
-                type='number'
-                value={post.bus}
-                onChange={onChange}
-              />
-            </InputWrapper>
-            <InputWrapper>
-              <Label>Restaraunt(distance) </Label>
-              <Input
-                name='restaurant'
-                type='number'
-                value={post.restaurant}
-                onChange={onChange}
-              />
-            </InputWrapper>
-          </Item>
-          <Item className='small'>
-            <InputWrapper>
-              <Label>property*</Label>
-              <Select
-                name='property'
-                value={post.property}
-                onChange={onChange}
-              >
-                <Option>apartment</Option>
-                <Option>house</Option>
-                <Option>condo</Option>
-                <Option>land</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
-              <Label>utility policies</Label>
-              <Select
-                name='utilities'
-                value={post.utilities}
-                onChange={onChange}
-              >
-                <Option>Owner is responsible</Option>
-                <Option>Tenant are responsible</Option>
-                <Option>shared</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
-              <Label>pet policies</Label>
-              <Select
-                name='pet'
-                value={post.pet}
-                onChange={onChange}
-              >
-                <Option>pet are allowed</Option>
-                <Option>pet are not allowed</Option>
-              </Select>
-            </InputWrapper>
+            </FormGroup>
           </Item>
           <ButtonWrapper>
             <Button
@@ -308,9 +289,9 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
               {loading ? (
                 <LoadingAnimation />
               ) : edit ? (
-                'update estate'
+                'update room'
               ) : (
-                'register estate'
+                'register room'
               )}{' '}
             </Button>
           </ButtonWrapper>
@@ -320,4 +301,4 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
   );
 };
 
-export default StepTwo;
+export default RoomStepTwo;

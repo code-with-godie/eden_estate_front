@@ -41,7 +41,6 @@ const InfoContainer = styled(motion.div)`
   align-items: center;
   gap: 1rem;
   .icon {
-    color: var(--color_primary);
     font-size: 2rem;
   }
 `;
@@ -52,7 +51,7 @@ const InfoDescription = styled.div`
 `;
 const ImageContainer = styled.div`
   padding: 1rem;
-  background-color: #27262d;
+  background-color: #a4a3a315;
 `;
 const Label = styled.p`
   text-transform: capitalize;

@@ -8,6 +8,9 @@ const AppContextProvider = ({ children }) => {
   const [showChat, setShowChat] = useState(false);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [rooms, setRooms] = useState([]);
+  const [conversation, setConversation] = useState(null);
+  const [chats, setChats] = useState([]);
 
   const toggleTheme = () => {
     setDarkMode(prev => {
@@ -51,10 +54,16 @@ const AppContextProvider = ({ children }) => {
   const share = {
     darkMode,
     user,
+    chats,
+    setChats,
+    rooms,
     token,
     showChat,
     openChat,
     closeChat,
+    setRooms,
+    conversation,
+    setConversation,
     isDrawerOpen,
     updateUser,
     updateToken,

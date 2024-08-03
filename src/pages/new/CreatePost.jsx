@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import DropZone from './DropZone';
-import { Close, Update } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -101,6 +101,7 @@ const CreatePost = () => {
     state: '',
     city: '',
     location: '',
+    type: '',
     coodinates: {
       longitude: -12.877473,
       latitude: 13.66432442,

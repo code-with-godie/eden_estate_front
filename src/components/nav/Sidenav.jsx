@@ -3,13 +3,7 @@ import { useAppContext } from '../../context/AppContextProvider';
 import { motion } from 'framer-motion';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import {
-  Home,
-  Login,
-  Logout,
-  Phone,
-  SignpostOutlined,
-} from '@mui/icons-material';
+import { Home, Login, Phone, SignpostOutlined } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
 const Container = styled(motion.div)`
   background: ${props => props.theme.bg_primary};
@@ -18,7 +12,7 @@ const Container = styled(motion.div)`
   top: 3.5rem;
   z-index: 100;
   right: 1rem;
-  min-height: 400px;
+  /* min-height: 400px; */
   width: 100vw;
   max-width: 200px;
   border-radius: 0.5rem;
@@ -74,10 +68,6 @@ const UserDetails = styled.div`
 const Sidenav = ({ setShowModel }) => {
   const { darkMode, isDrawerOpen, closeDrawer, toggleTheme } = useAppContext();
   const { user } = useAppContext();
-  const logout = () => {
-    setShowModel(true);
-    closeDrawer();
-  };
   const handleProfile = () => {
     navigate(`/profile/@${user?.username}`, {
       state: { userID: user?._id },
@@ -139,16 +129,12 @@ const Sidenav = ({ setShowModel }) => {
         <UserDetails>
           <Item
             className='profile'
-            onClick={logout}
-          >
-            <Logout />
-            <Label>Logout</Label>
-          </Item>
-          <Item
-            className='profile'
             onClick={handleProfile}
           >
-            <Avatar alt={user?.username} />
+            <Avatar
+              src={user?.avatar}
+              alt={user?.username}
+            />
             <Label>welcome, {user?.username} </Label>
           </Item>
         </UserDetails>

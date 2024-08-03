@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { SearchOutlined } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
-import Map from '../../components/Map';
+import Map from '../../components/map/Map';
 import PostList from './PostList';
 import { useFetch } from '../../api/useFetch';
 import { useEffect, useState } from 'react';
@@ -31,7 +31,6 @@ const Right = styled.div`
     width: 100%;
     height: 100%;
   }
-  background-color: red;
   @media screen and (min-width: 768px) {
     max-width: 500px;
   }
@@ -183,7 +182,7 @@ const Search = () => {
           </InputContainer>
           <InputContainer className='container'>
             <InputWrapper>
-              <Label>minPrice</Label>
+              <Label>pet options</Label>
               <InputContainer>
                 <Input
                   placeholder='0'
@@ -221,7 +220,7 @@ const Search = () => {
         )}
       </Left>
       <Right>
-        <Map />
+        <Map posts={posts} />
       </Right>
     </Container>
   );

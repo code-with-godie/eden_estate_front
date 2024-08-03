@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
+import { useLocation } from '../../hooks/useLocation';
 const Wrapper = styled.div`
   border-radius: 0.5rem;
   align-self: stretch;
@@ -85,6 +87,9 @@ const Search = () => {
   const [type, setType] = useState('rent');
   const { darkMode } = useAppContext();
   const [location, setLocation] = useState('');
+  // const { getCountriesStatesCities } = useLocation();
+  // const options = getCountriesStatesCities();
+  // console.log('options', options?.length, options);
   const navigate = useNavigate();
   const handleSubmit = e => {
     e.preventDefault();
@@ -118,6 +123,13 @@ const Search = () => {
           onChange={e => setLocation(e.target.value)}
           placeholder='Enter location'
         />
+        {/* <Select
+          value={location}
+          onChange={option => setLocation(option)}
+          options={options}
+          placeholder='Select an option'
+          isClearable
+        /> */}
         <Submit>
           submit <Find className='search' />
         </Submit>

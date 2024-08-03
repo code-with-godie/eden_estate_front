@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import Messeger from '../../components/messeger/Messeger';
+import { appwriteService } from '../../appWrite/appwriteService';
 const Container = styled.div`
   display: flex;
   overflow: auto;
@@ -87,8 +88,13 @@ const Label = styled.p`
 `;
 
 const Profile = () => {
-  const { user: loggedInUser, logout, showChat } = useAppContext();
+  const { user: loggedInUser, logout, showChat, setRooms } = useAppContext();
   const [user, setUser] = useState({});
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const navigate = useNavigate();
   const {
@@ -101,6 +107,7 @@ const Profile = () => {
   } = useFetch(`/users/single/${userID}`);
 
   const [posts, setPosts] = useState([]);
+  const [creating, setCreating] = useState(false);
   const [savedPosts, setSavedPosts] = useState([]);
   const { data, loading, error } = useFetch(`/posts/profile/${userID}`);
   const {
@@ -108,8 +115,25 @@ const Profile = () => {
     loading: savedLoading,
     error: savedError,
   } = useFetch(`/posts/saved/${userID}`);
-  const handleMessege = () => {
-    console.log('send messege');
+  const handleMessege = async e => {
+    e.stopPropagation();
+    try {
+      if (!loggedInUser) {
+        navigate('/login');
+        return;
+      }
+
+      setCreating(true);
+      const room = await appwriteService.createRoom([
+        loggedInUser?._id,
+        userID,
+      ]);
+      setRooms(prev => [room, ...prev?.filter(item => item.$id !== room?.$id)]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setCreating(false);
+    }
   };
 
   useEffect(() => {
@@ -154,12 +178,12 @@ const Profile = () => {
             <Label> {user?.username} </Label>
           </UserItem>
           <UserItem>
-            <Label>emial:</Label>
+            <Label>email:</Label>
             <Label> {user?.email} </Label>
           </UserItem>
           <UserItem>
             {loggedInUser?._id === userID && (
-              <Button onClick={logout}>logout</Button>
+              <Button onClick={handleLogout}>logout</Button>
             )}
           </UserItem>
         </UserInfo>
@@ -175,7 +199,10 @@ const Profile = () => {
               create new post
             </Button>
           ) : (
-            <Button onClick={handleMessege}>message</Button>
+            <Button onClick={handleMessege}>
+              {' '}
+              {creating ? <LoadingAnimation /> : 'message'}{' '}
+            </Button>
           )}
         </Header>
         {error ? (
@@ -183,7 +210,10 @@ const Profile = () => {
         ) : loading ? (
           <LoadingAnimation />
         ) : (
-          <PostList posts={posts} />
+          <PostList
+            handleMessege={handleMessege}
+            posts={posts}
+          />
         )}
         <Header>
           <Title>saved places</Title>
@@ -197,7 +227,7 @@ const Profile = () => {
         )}
       </Left>
       <Right className={showChat && 'show'}>
-        <Messeger />
+        {loggedInUser ? <Messeger /> : <p>login to see messeges</p>}
       </Right>
     </Container>
   );

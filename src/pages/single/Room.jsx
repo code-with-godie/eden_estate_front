@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import image from '../../assets/bg2.jpeg';
 import { useAppContext } from '../../context/AppContextProvider';
 import {
   Bathroom,
@@ -74,7 +73,23 @@ const Button = styled.div`
   cursor: pointer;
   text-transform: capitalize;
 `;
-const Room = () => {
+const Room = ({
+  image,
+  home,
+  kingSize,
+  queenSize,
+  wifi,
+  guests,
+  breakFast,
+  price,
+  conditional,
+  mountain,
+  forest,
+  ocean,
+  balcony,
+  tv,
+  bathrooms,
+}) => {
   const { darkMode } = useAppContext();
   return (
     <Container className={darkMode ? 'dark' : 'light'}>
@@ -83,69 +98,105 @@ const Room = () => {
           <Image src={image} />
         </Wrapper>
         <Utilities>
-          <Utility>
-            <Bed />
-            <Label> 1 Bed(s)</Label>
-          </Utility>
+          {balcony && (
+            <Utility>
+              <Bed />
+              <Label> Balcony</Label>
+            </Utility>
+          )}
           <Utility>
             <Bathroom />
-            <Label>1 bathroom(s)</Label>
+            <Label> {bathrooms} bathroom(s)</Label>
           </Utility>
           <Utility>
             <People />
-            <Label>1 guest (s)</Label>
+            <Label>{guests} guest (s)</Label>
+          </Utility>
+          {wifi && (
+            <Utility>
+              <Wifi />
+              <Label>free wifi</Label>
+            </Utility>
+          )}
+          {conditional && (
+            <Utility>
+              <Wifi />
+              <Label>air conditional</Label>
+            </Utility>
+          )}
+          <Utility>
+            <Wifi />
+            <Label> {kingSize} king size</Label>
           </Utility>
           <Utility>
             <Wifi />
-            <Label>air conditional</Label>
+            <Label> {queenSize} queen size</Label>
           </Utility>
-          <Utility>
-            <Wifi />
-            <Label>1 king size</Label>
-          </Utility>
-          <Utility>
-            <Wifi />
-            <Label>1 queen size</Label>
-          </Utility>
-          <Utility>
-            <Tv />
-            <Label>TV</Label>
-          </Utility>
+          {tv && (
+            <Utility>
+              <Tv />
+              <Label>TV</Label>
+            </Utility>
+          )}
+          {ocean && (
+            <Utility>
+              <Tv />
+              <Label>ocean view</Label>
+            </Utility>
+          )}
+          {mountain && (
+            <Utility>
+              <Tv />
+              <Label>mountain view</Label>
+            </Utility>
+          )}
+          {forest && (
+            <Utility>
+              <Tv />
+              <Label>forest view</Label>
+            </Utility>
+          )}
         </Utilities>
       </Section>
       <Section>
         <Wrapper>
           <Utility>
             <Label className='bold'>price Kshs</Label>
-            <Label>200/24hrs</Label>
+            <Label> {price} /24hrs</Label>
           </Utility>
-          <Utility>
-            <Label className='bold'>breakfast price</Label>
-            <Label>kshs 150</Label>
-          </Utility>
+          {breakFast > 0 && (
+            <Utility>
+              <Label className='bold'>breakfast price</Label>
+              <Label>kshs {breakFast} </Label>
+            </Utility>
+          )}
         </Wrapper>
       </Section>
       <Section>
-        <Label>date picker </Label>
-        <Wrapper>
-          <Label>do you want to be served breafast each day?</Label>
-          <FormGroup>
-            <FormControlLabel
-              control={<Checkbox defaultChecked />}
-              label='include breakfast'
-            />
-          </FormGroup>
-        </Wrapper>
+        {!home && <Label>date picker </Label>}
+        {breakFast > 0 && (
+          <Wrapper>
+            <Label>do you want to be served breafast each day?</Label>
+            <FormGroup>
+              <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label='include breakfast'
+              />
+            </FormGroup>
+          </Wrapper>
+        )}
         <Utility>
           <Label className='bold'>total price :</Label>
           <Label>200 for 2 days</Label>
         </Utility>
-        <Wrapper>
-          <Button>
-            {' '}
-            <BookOnline /> reserve room
-          </Button>
-        </Wrapper>
+        {!home && (
+          <Wrapper>
+            <Button>
+              {' '}
+              <BookOnline /> reserve room
+            </Button>
+          </Wrapper>
+        )}
       </Section>
     </Container>
   );

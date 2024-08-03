@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { LocationOnOutlined } from '@mui/icons-material';
 const Container = styled(motion.div)`
   height: 100%;
   cursor: pointer;
@@ -28,16 +29,19 @@ const Image = styled.img`
 `;
 const Price = styled.h2`
   font-size: 1.5rem;
+  color: var(--faded_blue);
 `;
 const Title = styled.h4`
-  color: var(--faded_blue);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 const Description = styled.p`
   /* font-weight: 100; */
   font-size: 0.95em;
   font-style: italic;
 `;
-const Slide = ({ image, desc, price, title, _id }) => {
+const Slide = ({ image, desc, location, city, state, country, title, _id }) => {
   const navigate = useNavigate();
   return (
     <Container
@@ -53,8 +57,12 @@ const Slide = ({ image, desc, price, title, _id }) => {
         <Image src={image} />
       </ImageContainer>
       <DescriptionContainer>
-        <Price>Kshs. {price} </Price>
-        <Title> {title} </Title>
+        <Price>{title} </Price>
+        <Title>
+          {' '}
+          <LocationOnOutlined className='icon' />
+          {`${city === state ? state : `${city},${state}`},${country}`}{' '}
+        </Title>
         <Description>
           {' '}
           {desc?.length > 100 ? `${desc?.substring(0, 100)}...` : desc}{' '}
