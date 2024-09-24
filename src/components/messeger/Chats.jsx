@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../../context/AppContextProvider';
 import { appwriteService } from '../../appWrite/appwriteService';
-import LoadingAnimation from '../loading/LoadingAnimation';
 import MesssegeSkeleton from '../skeletons/MesssegeSkeleton';
 const Container = styled(motion.div)`
   position: absolute;
@@ -15,7 +14,7 @@ const Container = styled(motion.div)`
   z-index: 200;
   display: flex;
   flex-direction: column;
-  background-color: #303030;
+  background-color: ${props => (props.dark ? '#303030' : '#9898981b')};
 `;
 const Header = styled.div`
   display: flex;
@@ -56,7 +55,7 @@ const Messege = styled.p`
   }
 `;
 const InputContainer = styled.div`
-  background-color: #0d0d0d52;
+  background-color: ${props => (props.dark ? '#0d0d0d52' : '#8e8e8e1b')};
   display: flex;
   padding: 0.5rem;
   gap: 0.5rem;
@@ -81,7 +80,7 @@ const variants = {
   animate: { opacity: 1, y: 0, transition: { duration: 1 } },
 };
 const Chats = () => {
-  const { conversation, setConversation, user, chats, setChats } =
+  const { conversation, setConversation, user, chats, setChats, darkMode } =
     useAppContext();
   const [text, setText] = useState('');
   const [loading, setLoading] = useState('');
@@ -124,6 +123,7 @@ const Chats = () => {
   return (
     <Container
       variants={variants}
+      dark={darkMode}
       initial='initial'
       animate={conversation ? 'animate' : 'initial'}
     >

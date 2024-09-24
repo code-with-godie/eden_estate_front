@@ -63,7 +63,7 @@ export const router = createBrowserRouter([
         element: <ProtectedLayout />,
         children: [
           {
-            path: '/book',
+            path: '/book/:postID/:roomID',
             element: <Booking />,
           },
           {

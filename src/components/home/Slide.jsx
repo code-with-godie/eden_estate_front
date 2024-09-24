@@ -5,12 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { LocationOnOutlined } from '@mui/icons-material';
 const Container = styled(motion.div)`
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   cursor: pointer;
 `;
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: auto;
+  height: 200px;
   display: flex;
 `;
 const DescriptionContainer = styled.div`
@@ -20,7 +23,7 @@ const DescriptionContainer = styled.div`
 `;
 const Image = styled.img`
   width: 100%;
-  height: auto;
+  height: 100%;
   max-height: 200px;
   margin: 0 auto;
   max-width: 300px;

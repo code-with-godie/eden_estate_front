@@ -6,6 +6,7 @@ import {
   Chat,
   Edit,
   LocationOnOutlined,
+  Pets,
 } from '@mui/icons-material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -46,8 +47,12 @@ const Address = styled.p`
 `;
 const Price = styled.h3`
   padding: 0.3rem;
-  background-color: var(--faded_blue);
+  color: var(--faded_blue);
   align-self: flex-start;
+`;
+const Desc = styled.p`
+  padding: 0.3rem;
+  font-size: 0.9rem;
 `;
 const FooterContainer = styled.div`
   display: flex;
@@ -93,15 +98,15 @@ const Post = ({ handleMessege, variants, ...post }) => {
     user: postUser,
     country,
     title,
-    price,
     _id,
     image,
-    bedrooms,
-    bathrooms,
+    property,
+    pet,
     city,
+    type,
   } = post;
   const [bookmarked, setBookmarked] = useState(false);
-  const { user, token, updateUser, openChat } = useAppContext();
+  const { user, token, updateUser } = useAppContext();
   const handleBookmark = async e => {
     e.stopPropagation();
     if (!user) {
@@ -119,7 +124,6 @@ const Post = ({ handleMessege, variants, ...post }) => {
         setBookmarked(false);
       }
     }
-    // console.log('user changed');
   }, [user, _id]);
   return (
     <Container
@@ -135,16 +139,17 @@ const Post = ({ handleMessege, variants, ...post }) => {
           <LocationOnOutlined className='icon' />
           {`${city === state ? state : `${city},${state}`},${country}`}
         </Address>
-        <Price> Kshs. {price} </Price>
+        <Price> available for {type} </Price>
+        <Desc> click to book a room here </Desc>
         <FooterContainer>
           <FooterLeft>
             <IconWrapper>
               <Bed className='icon' />
-              {bedrooms ? `${bedrooms} bedrooms` : `1 bedrooms`}
+              {property}
             </IconWrapper>
             <IconWrapper>
-              <Bathroom className='icon' />
-              {bathrooms ? `${bathrooms} bathrooms` : `1 bathrooms`}
+              <Pets className='icon' />
+              {pet}
             </IconWrapper>
           </FooterLeft>
           <FooterRight>

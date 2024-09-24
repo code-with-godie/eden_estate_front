@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import { useNavigate } from 'react-router-dom';
-import Select from 'react-select';
-import { useLocation } from '../../hooks/useLocation';
 const Wrapper = styled.div`
   border-radius: 0.5rem;
   align-self: stretch;
@@ -19,7 +17,11 @@ const ButtonContainer = styled.div``;
 const Button = styled.button`
   padding: 0.5em 1rem;
   outline: none;
-  border: 1px solid var(--faded_blue);
+  border: none;
+  border-top: 2px solid var(--faded_blue);
+  border-left: 2px solid var(--faded_blue);
+  border-right: 2px solid var(--faded_blue);
+  /* border-top: 1px solid var(--faded_blue); */
   font-size: 1rem;
   text-transform: capitalize;
   background: white;
@@ -41,7 +43,8 @@ const Form = styled.form`
   background-color: white;
   border-radius: 0 0.5rem 0.5rem 0.5rem;
   display: flex;
-  border: ${props => props.dark && '5px solid var(---faded_blue)'};
+  border: 2px solid var(--faded_blue);
+  /* border: ${props => props.dark && '5px solid var(---faded_blue)'}; */
   align-items: center;
   gap: 0.5rem;
   .location {
@@ -87,9 +90,6 @@ const Search = () => {
   const [type, setType] = useState('rent');
   const { darkMode } = useAppContext();
   const [location, setLocation] = useState('');
-  // const { getCountriesStatesCities } = useLocation();
-  // const options = getCountriesStatesCities();
-  // console.log('options', options?.length, options);
   const navigate = useNavigate();
   const handleSubmit = e => {
     e.preventDefault();

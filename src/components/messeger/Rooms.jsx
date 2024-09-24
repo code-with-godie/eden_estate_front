@@ -6,8 +6,7 @@ import { Close } from '@mui/icons-material';
 import { useAppContext } from '../../context/AppContextProvider';
 import Room from './Room';
 import { appwriteService } from '../../appWrite/appwriteService';
-import LoadingAnimation from '../loading/LoadingAnimation';
-import { useNavigate } from 'react-router-dom';
+import SmsRoomsSkelton from '../skeletons/SmsRoomsSkeleton';
 const Container = styled(motion.div)`
   height: 100%;
   display: flex;
@@ -63,7 +62,11 @@ const Rooms = () => {
     getRooms();
   }, [getRooms]);
   if (loading) {
-    return <LoadingAnimation />;
+    return (
+      <Container>
+        <SmsRoomsSkelton />
+      </Container>
+    );
   }
   if (error) {
     return <p> {error?.message} </p>;

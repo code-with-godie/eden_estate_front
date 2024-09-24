@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-// import { MdKeyboardArrowLeft } from 'react-icons/md';
-// import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Room from '../../pages/single/Room';
 import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
 
-// import { IconButton } from '@mui/material';
 import { useFetch } from '../../api/useFetch';
-import LoadingAnimation from '../loading/LoadingAnimation';
+import FeaturedPlaceSkelton from '../skeletons/FeauredPostSkelton';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,9 +14,6 @@ const Container = styled.div`
   z-index: 100;
   padding: 0.5rem 0 0 0;
   gap: 0.5rem;
-  /* @media screen and (min-width: 768px) {
-    height: 70vh;
-  } */
 `;
 const SubTittle = styled.h4`
   font-size: 1.3rem;
@@ -35,9 +29,7 @@ const Title = styled.h1`
 const Wrapper = styled.div`
   position: relative;
   flex: 1;
-  /* overflow: hidden; */
   .swiper {
-    /* background-color: red; */
     width: 100%;
     height: 100%;
     padding: 0.5rem;
@@ -62,11 +54,10 @@ const Wrapper = styled.div`
 const FeaturedRooms = () => {
   const [featured, setFeatured] = useState([]);
   const { data, loading, error } = useFetch('/rooms');
-  // const swiper = useSwiper();
   useEffect(() => {
     data && setFeatured(data.rooms);
   }, [data]);
-  if (loading) return <LoadingAnimation large />;
+  if (loading) return <FeaturedPlaceSkelton />;
   if (error) return <p>could not load a post</p>;
   return (
     <Container>
@@ -100,23 +91,8 @@ const FeaturedRooms = () => {
                 home
                 {...item}
               />
-              {/* <Slide {...item} /> */}
             </SwiperSlide>
           ))}
-          {/* <IconButton
-            className='btn left'
-            onClick={() => swiper?.slidePrev()}
-          >
-            {' '}
-            <MdKeyboardArrowLeft />{' '}
-          </IconButton>
-          <IconButton
-            className='btn right'
-            onClick={() => swiper?.slideNext()}
-          >
-            {' '}
-            <MdKeyboardArrowRight />{' '}
-          </IconButton> */}
         </Swiper>
       </Wrapper>
     </Container>

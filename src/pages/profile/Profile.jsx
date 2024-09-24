@@ -6,8 +6,10 @@ import PostList from '../search/PostList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
+import SearchSkeleton from '../../components/skeletons/SearchSkelton';
 import Messeger from '../../components/messeger/Messeger';
 import { appwriteService } from '../../appWrite/appwriteService';
+import saved from '../../assets/saved.png';
 const Container = styled.div`
   display: flex;
   overflow: auto;
@@ -27,13 +29,14 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  height: 100%;
   overflow: auto;
 `;
 const Right = styled.div`
-  flex: 1;
   max-width: 400px;
   position: sticky;
   top: 0;
+  flex: 1;
   @media screen and (max-width: 768px) {
     position: absolute;
     max-width: none;
@@ -85,6 +88,21 @@ const Label = styled.p`
     font-weight: 500;
     text-transform: capitalize;
   }
+`;
+
+const Wrapper = styled.div`
+  height: 100vh;
+  position: sticky;
+  top: 50px;
+  overflow: hidden;
+  display: grid;
+  place-content: center;
+  gap: 1rem;
+`;
+const Image = styled.img`
+  max-width: 100%;
+  height: 300px;
+  object-fit: contain;
 `;
 
 const Profile = () => {
@@ -208,9 +226,10 @@ const Profile = () => {
         {error ? (
           <p>could not load posts</p>
         ) : loading ? (
-          <LoadingAnimation />
+          <SearchSkeleton />
         ) : (
           <PostList
+            message='you have not posted any estate yet'
             handleMessege={handleMessege}
             posts={posts}
           />
@@ -221,13 +240,27 @@ const Profile = () => {
         {savedError ? (
           <p>could not load saved places </p>
         ) : savedLoading ? (
-          <LoadingAnimation />
+          <SearchSkeleton />
         ) : (
-          <PostList posts={savedPosts} />
+          <PostList
+            message={
+              loggedInUser?._id === userID
+                ? 'your saved posts will appear here'
+                : `${user?.username} have no saved posts`
+            }
+            posts={savedPosts}
+          />
         )}
       </Left>
       <Right className={showChat && 'show'}>
-        {loggedInUser ? <Messeger /> : <p>login to see messeges</p>}
+        {loggedInUser ? (
+          <Messeger />
+        ) : (
+          <Wrapper>
+            <Image src={saved} />
+            <p>login to see conversation</p>
+          </Wrapper>
+        )}
       </Right>
     </Container>
   );

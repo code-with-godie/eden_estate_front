@@ -10,10 +10,10 @@ import AccountModel from '../../components/nav/AccountModel';
 const Wrapper = styled.main`
   display: flex;
   justify-content: center;
-  height: 100vh;
+  /* height: 100vh; */
   width: 100%;
   position: relative;
-  overflow: auto;
+  /* overflow: auto; */
   /* overflow-x: hidden; */
   color: ${props => props.theme.color_primary};
   background: ${props => props.theme.bg_primary};

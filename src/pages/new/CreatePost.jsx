@@ -97,8 +97,14 @@ const CreatePost = () => {
   const [post, setPost] = useState({
     title: '',
     price: '',
-    country: '',
-    state: '',
+    country: {
+      ISOCode: '',
+      name: '',
+    },
+    state: {
+      ISOCode: '',
+      name: '',
+    },
     city: '',
     location: '',
     type: '',

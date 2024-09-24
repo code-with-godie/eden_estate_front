@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Room from './Room';
 import { useFetch } from '../../api/useFetch';
-import LoadingAnimation from '../../components/loading/LoadingAnimation';
+import RoomsSkelton from '../../components/skeletons/RoomsSkeleton';
+import saved from '../../assets/saved.png';
 const Wrapper = styled.section``;
 const Container = styled.div`
   display: grid;
@@ -19,16 +20,28 @@ const Title = styled.h2`
   color: var(--faded_blue);
   padding-bottom: 0.6rem;
 `;
+const Image = styled.img`
+  max-width: 100%;
+  height: 300px;
+  object-fit: contain;
+`;
+const Message = styled.p``;
 const Rooms = ({ title, estateID }) => {
-  const [rooms, setRooms] = useState([]);
-  const { loading, data, error } = useFetch(`/rooms/${estateID}`);
+  const [rooms, setRooms] = useState(null);
+  const { data, loading, error } = useFetch(`/rooms/${estateID}`);
 
   useEffect(() => {
     data && setRooms(data?.rooms);
   }, [data]);
-  if (loading) return <LoadingAnimation />;
+  if (loading) return <RoomsSkelton />;
   if (error) return <p> {error?.message} </p>;
-  if (rooms.length === 0) return null;
+  if (rooms?.length === 0)
+    return (
+      <Wrapper>
+        <Image src={saved} />
+        <Message> no rooms for this estate </Message>
+      </Wrapper>
+    );
   return (
     <Wrapper>
       <Title>{title} rooms</Title>

@@ -18,16 +18,26 @@ const Container = styled.div`
   flex-direction: column;
   gap: 0.5rem;
 `;
-const Title = styled.h3``;
+const Title = styled.h3`
+  &.dark {
+    color: white;
+  }
+`;
 const Label = styled.p`
   font-size: 0.8rem;
   &.title {
     font-size: 1.1rem;
     text-transform: capitalize;
   }
+  &.dark {
+    color: white;
+  }
 `;
 const Icon = styled.img`
   max-width: 25px;
+  &.dark {
+    filter: invert();
+  }
 `;
 const Item = styled.div`
   display: flex;
@@ -91,64 +101,99 @@ const SingleDescription = ({
       <Title>General</Title>
       <Wrapper className={darkMode ? 'dark first' : 'light first'}>
         <Item>
-          <Icon src={utilitiesImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={utilitiesImage}
+          />
           <ItemWrapper>
-            <Label className='title'>utilities</Label>
-            <Label> {utilities} </Label>
+            <Label className={`title ${darkMode && 'dark'}`}>utilities</Label>
+            <Label className={`${darkMode && 'dark'}`}> {utilities} </Label>
           </ItemWrapper>
         </Item>
         <Item>
-          <Icon src={petImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={petImage}
+          />
           <ItemWrapper>
-            <Label className='title'>pet policy</Label>
-            <Label> {pet} </Label>
+            <Label className={`title ${darkMode && 'dark'}`}>pet policy</Label>
+            <Label className={`${darkMode && 'dark'}`}> {pet} </Label>
           </ItemWrapper>
         </Item>
         <Item>
-          <Icon src={incomeImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={incomeImage}
+          />
           <ItemWrapper>
-            <Label className='title'>income policy</Label>
-            <Label> {income} </Label>
+            <Label className={`title ${darkMode && 'dark'}`}>
+              income policy
+            </Label>
+            <Label className={`${darkMode && 'dark'}`}> {income} </Label>
           </ItemWrapper>
         </Item>
       </Wrapper>
       <Title>sizes</Title>
       <Wrapper className={darkMode ? 'dark' : 'light'}>
         <Item>
-          <Icon src={squareImage} />
-          <Label> {size} sqft</Label>
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={squareImage}
+          />
+          <Label className={`${darkMode && 'dark'}`}> {size} sqft</Label>
         </Item>
         <Item>
-          <Icon src={bedImage} />
-          <Label> {bedrooms} beds</Label>
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={bedImage}
+          />
+          <Label className={`${darkMode && 'dark'}`}> {bedrooms} beds</Label>
         </Item>
         <Item>
-          <Icon src={bathroomImage} />
-          <Label> {bathrooms} bathroom</Label>
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={bathroomImage}
+          />
+          <Label className={`${darkMode && 'dark'}`}>
+            {' '}
+            {bathrooms} bathroom
+          </Label>
         </Item>
       </Wrapper>
 
       <Title>Nearby places</Title>
       <Wrapper className={darkMode ? 'dark' : 'light'}>
         <Item>
-          <Icon src={schoolImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={schoolImage}
+          />
           <ItemWrapper>
-            <Label className='title'>School</Label>
-            <Label>{school} m away</Label>
+            <Label className={`title ${darkMode && 'dark'}`}>School</Label>
+            <Label className={`${darkMode && 'dark'}`}>{school} m away</Label>
           </ItemWrapper>
         </Item>
         <Item>
-          <Icon src={busImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={busImage}
+          />
           <ItemWrapper>
-            <Label className='title'>Bus Stop</Label>
-            <Label>{bus} m away</Label>
+            <Label className={`title ${darkMode && 'dark'}`}>Bus Stop</Label>
+            <Label className={`${darkMode && 'dark'}`}>{bus} m away</Label>
           </ItemWrapper>
         </Item>
         <Item>
-          <Icon src={resImage} />
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={resImage}
+          />
           <ItemWrapper>
-            <Label className='title'>Restaurant</Label>
-            <Label> {restaurant}m away</Label>
+            <Label className={`title ${darkMode && 'dark'}`}>Restaurant</Label>
+            <Label className={`${darkMode && 'dark'}`}>
+              {' '}
+              {restaurant}m away
+            </Label>
           </ItemWrapper>
         </Item>
       </Wrapper>
@@ -163,12 +208,18 @@ const SingleDescription = ({
       </Wrapper>
       <Control className={darkMode ? 'dark' : 'light'}>
         <Item>
-          <Icon src={chat} />
-          <Label>send a message</Label>
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={chat}
+          />
+          <Label className={`${darkMode && 'dark'}`}>send a message</Label>
         </Item>
         <Item>
-          <Icon src={save} />
-          <Label>save the place</Label>
+          <Icon
+            className={`${darkMode && 'dark'}`}
+            src={save}
+          />
+          <Label className={`${darkMode && 'dark'}`}>save the place</Label>
         </Item>
       </Control>
     </Container>

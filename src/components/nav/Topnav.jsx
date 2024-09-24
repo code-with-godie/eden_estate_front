@@ -86,6 +86,9 @@ const LogoImage = styled(motion.img)`
   cursor: pointer;
   object-fit: contain;
   height: auto;
+  &.dark {
+    filter: invert();
+  }
   &.small {
     max-width: 30px;
   }
@@ -138,6 +141,7 @@ const Topnav = ({ setShowModel }) => {
         animate='animate'
       >
         <LogoImage
+          className={`${darkMode && 'dark'}`}
           initial='initial'
           animate='animate'
           src={logo}
@@ -170,10 +174,10 @@ const Topnav = ({ setShowModel }) => {
           initial='initial'
           animate='animate'
           className='link'
-          to='/about'
+          to='/search'
         >
           <Phone />
-          About
+          Estates
         </NavLink>
         <NavLink
           initial='initial'

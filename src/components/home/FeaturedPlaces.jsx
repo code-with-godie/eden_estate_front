@@ -1,15 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-// import { MdKeyboardArrowLeft } from 'react-icons/md';
-// import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import Slide from './Slide';
 import 'swiper/css';
 import { Autoplay } from 'swiper/modules';
-
-// import { IconButton } from '@mui/material';
 import { useFetch } from '../../api/useFetch';
-import LoadingAnimation from '../loading/LoadingAnimation';
+import FeaturedPlaceSkelton from '../skeletons/FeauredPostSkelton';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,9 +31,7 @@ const Title = styled.h1`
 const Wrapper = styled.div`
   position: relative;
   flex: 1;
-  /* overflow: hidden; */
   .swiper {
-    /* background-color: red; */
     width: 100%;
     height: 100%;
     padding: 0.5rem;
@@ -61,11 +55,10 @@ const Wrapper = styled.div`
 const FeaturedPlaces = () => {
   const [featured, setFeatured] = useState([]);
   const { data, loading, error } = useFetch('/posts/featured');
-  // const swiper = useSwiper();
   useEffect(() => {
     data && setFeatured(data.posts);
   }, [data]);
-  if (loading) return <LoadingAnimation large />;
+  if (loading) return <FeaturedPlaceSkelton />;
   if (error) return <p>could not load a post</p>;
   return (
     <Container>

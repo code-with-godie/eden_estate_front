@@ -75,12 +75,21 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
     const value = e.target.value;
     setPost(prev => ({ ...prev, [name]: value }));
   };
+  const handleCountry = e => {
+    const value = e.target.value;
+    setPost(prev => ({ ...prev, country: { ISOCode: value } }));
+  };
+  const handleState = e => {
+    const value = e.target.value;
+
+    setPost(prev => ({ ...prev, state: { ISOCode: value } }));
+  };
   useEffect(() => {
     if (
       !post.title ||
       !post.price ||
-      !post.country ||
-      !post.state ||
+      !post.country?.ISOCode ||
+      !post.state?.ISOCode ||
       !post.city
     ) {
       setDisabled(true);
@@ -137,8 +146,8 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               <FormControl fullWidth>
                 <Select
                   name='country'
-                  value={post?.country}
-                  onChange={onChange}
+                  value={post?.country?.ISOCode}
+                  onChange={handleCountry}
                   sx={{
                     '& .MuiOutlinedInput-notchedOutline': {
                       borderColor: () => (darkMode ? 'white' : 'gray'),
@@ -190,8 +199,8 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               <Select
                 name='state'
                 disabled={states.length <= 0}
-                value={post?.state}
-                onChange={onChange}
+                value={post?.state?.ISOCode}
+                onChange={handleState}
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: () => (darkMode ? 'white' : 'gray'),

@@ -1,10 +1,9 @@
-import { Avatar } from '@mui/material';
+import { Avatar, Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { useAppContext } from '../../context/AppContextProvider';
 import { useFetch } from '../../api/useFetch';
-import { useNavigate } from 'react-router-dom';
 const RoomContainer = styled(motion.div)`
   padding: 0.5rem;
   display: flex;
@@ -12,6 +11,11 @@ const RoomContainer = styled(motion.div)`
   gap: 0.5rem;
   background-color: #aaaaaa28;
   cursor: pointer;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 `;
 const UserName = styled.h4``;
 const Messege = styled.p``;
@@ -30,7 +34,21 @@ const Room = ({ variants, last_messege, members, $id, messeges }) => {
   useEffect(() => {
     data && setOtherUser(data?.user);
   }, [data]);
-  if (loading) return <p>skeleton</p>;
+  if (loading)
+    return (
+      <Wrapper>
+        <Skeleton
+          variant='circular'
+          width={50}
+          height={50}
+        />
+        <Skeleton
+          variant='rounded'
+          width='100%'
+          height={50}
+        />
+      </Wrapper>
+    );
   if (error) return <p> {error.message} </p>;
   return (
     <RoomContainer

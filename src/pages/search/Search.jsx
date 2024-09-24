@@ -5,7 +5,7 @@ import Map from '../../components/map/Map';
 import PostList from './PostList';
 import { useFetch } from '../../api/useFetch';
 import { useEffect, useState } from 'react';
-import LoadingAnimation from '../../components/loading/LoadingAnimation';
+import SearchSkelton from '../../components/skeletons/SearchSkelton';
 const Container = styled.div`
   display: flex;
   overflow: auto;
@@ -27,6 +27,8 @@ const Left = styled.div`
 `;
 const Right = styled.div`
   flex: 1;
+  position: sticky;
+  top: 0px;
   .map {
     width: 100%;
     height: 100%;
@@ -114,7 +116,7 @@ const Search = () => {
     property: 'apartment',
   });
   const [posts, setPosts] = useState([]);
-  const { loading, data, error } = useFetch(
+  const { data, loading, error } = useFetch(
     `/posts/search?location=${searchParams.get(
       'location'
     )}&type=${searchParams.get('type')}&property=${searchParams.get(
@@ -214,9 +216,14 @@ const Search = () => {
         {error ? (
           <p>could not load posts</p>
         ) : loading ? (
-          <LoadingAnimation />
+          <SearchSkelton />
         ) : (
-          <PostList posts={posts} />
+          <PostList
+            message={`no results for your search ${searchParams.get(
+              'location'
+            )}`}
+            posts={posts}
+          />
         )}
       </Left>
       <Right>

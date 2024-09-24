@@ -6,15 +6,15 @@ import { Avatar } from '@mui/material';
 import SingleDescription from './SingleDescription';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
-import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import Rooms from './Rooms';
 import { useAppContext } from '../../context/AppContextProvider';
+import SinglePostSkelton from '../../components/skeletons/SinglePostSkeleton';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
   @media screen and (min-width: 768px) {
-    height: 100%;
+    min-height: 100%;
     flex-direction: row;
   }
 `;
@@ -120,7 +120,6 @@ const User = styled.div`
   &.light {
     box-shadow: 0px 0px 5px 3px #f2f1f1;
   }
-  /* background-color: var(--faded_blue); */
   .profile {
     width: 50px;
     height: 50px;
@@ -151,7 +150,7 @@ const Button = styled.div`
   }
 `;
 const SinglePost = () => {
-  const [post, setPost] = useState();
+  const [post, setPost] = useState(null);
   const { postID } = useParams();
   const { darkMode, user } = useAppContext();
   const { data, loading, error } = useFetch(`/posts/find/${postID}`);
@@ -160,7 +159,7 @@ const SinglePost = () => {
   useEffect(() => {
     data && setPost(data?.post);
   }, [data]);
-  if (loading) return <LoadingAnimation large />;
+  if (loading) return <SinglePostSkelton />;
   if (error) return <p>could not load a post</p>;
 
   return (

@@ -10,6 +10,7 @@ import {
   Wifi,
 } from '@mui/icons-material';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 const Container = styled.section`
   padding: 0.5rem;
   &.dark {
@@ -18,6 +19,8 @@ const Container = styled.section`
   &.light {
     box-shadow: 0px 0px 5px 3px #f2f1f1;
   }
+  align-self: stretch;
+  cursor: pointer;
 `;
 const Section = styled.article`
   display: flex;
@@ -37,8 +40,7 @@ const Wrapper = styled.div`
 `;
 const Image = styled.img`
   width: 100%;
-  height: auto;
-  max-height: 150px;
+  height: 150px;
   border-radius: 0.5rem;
   object-fit: cover;
 `;
@@ -89,10 +91,16 @@ const Room = ({
   balcony,
   tv,
   bathrooms,
+  estateID,
+  _id,
 }) => {
   const { darkMode } = useAppContext();
+  const navigate = useNavigate();
   return (
-    <Container className={darkMode ? 'dark' : 'light'}>
+    <Container
+      onClick={() => navigate(`/book/${estateID}/${_id}`)}
+      className={darkMode ? 'dark' : 'light'}
+    >
       <Section>
         <Wrapper>
           <Image src={image} />

@@ -1,19 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Edit, LocationOnOutlined } from '@mui/icons-material';
-import { Avatar } from '@mui/material';
+import { LocationOnOutlined } from '@mui/icons-material';
+import { Avatar, Skeleton } from '@mui/material';
+// import SingleDescription from './SingleDescription';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
-import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import { useAppContext } from '../../context/AppContextProvider';
+import Map from '../../components/map/Map';
+import Room from '../single/Room';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  gap: 1rem;
+  min-height: 70vh;
+  .dark {
+    background: #2a2929;
+  }
   @media screen and (min-width: 768px) {
-    height: 100%;
     flex-direction: row;
+  }
+`;
+const Right = styled.div`
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media screen and (min-width: 768px) {
+    max-width: 400px;
   }
 `;
 const Left = styled.div`
@@ -22,9 +38,6 @@ const Left = styled.div`
   flex-direction: column;
   gap: 1rem;
   overflow: auto;
-  @media screen and (min-width: 768px) {
-    flex-direction: row;
-  }
 `;
 const Top = styled.div`
   display: flex;
@@ -89,16 +102,6 @@ const Address = styled.p`
   display: flex;
   align-items: center;
 `;
-const LableContainer = styled.ul``;
-const Label = styled.li`
-  padding: 0.3rem;
-  /* background-color: var(--faded_blue); */
-  align-self: flex-start;
-`;
-const Description = styled.p`
-  padding: 0.3rem;
-  letter-spacing: 1px;
-`;
 const User = styled.div`
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
@@ -113,7 +116,6 @@ const User = styled.div`
   &.light {
     box-shadow: 0px 0px 5px 3px #f2f1f1;
   }
-  /* background-color: var(--faded_blue); */
   .profile {
     width: 50px;
     height: 50px;
@@ -122,119 +124,143 @@ const User = styled.div`
 const Name = styled.p`
   color: var(--faded_blue);
 `;
-const Button = styled.div`
-  border: none;
-  outline: none;
-  padding: 0.5rem 1rem;
-  flex: 1;
+const MapContainer = styled.div`
+  width: 100%;
+  height: 250px;
+`;
+
+const Wrapper = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  color: white;
-  background-color: var(--faded_blue);
-  border-radius: 0.5rem;
-  cursor: pointer;
-  text-transform: capitalize;
-  &.overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 100;
-  }
+  justify-content: space-between;
+  gap: 1rem;
 `;
 const Booking = () => {
-  const [post, setPost] = useState();
-  const { postID } = useParams();
-  const { darkMode, user } = useAppContext();
-  const { data, loading, error } = useFetch(`/posts/find/${postID}`);
+  const [post, setPost] = useState(null);
+  const [room, setRoom] = useState(null);
+  const { postID, roomID } = useParams();
+  const { darkMode } = useAppContext();
+  const { data, error, loading } = useFetch(`/posts/find/${postID}`);
+  const {
+    data: roomData,
+    loading: roomLoading,
+    // error: roomError,
+  } = useFetch(`/rooms/single/${roomID}`);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     data && setPost(data?.post);
   }, [data]);
-  if (loading) return <LoadingAnimation large />;
+  useEffect(() => {
+    roomData && setRoom(roomData?.room);
+    console.log(roomData);
+  }, [roomData]);
+  // if (loading) return <SinglePostSkelton />;
   if (error) return <p>could not load a post</p>;
 
   return (
     <Container>
+      <Right>
+        {roomLoading ? (
+          <Skeleton
+            variant='rounded'
+            width='100%'
+            height='100%'
+            className={darkMode && 'dark'}
+          />
+        ) : (
+          <>
+            {room && <Room {...room} />}
+            <p> {post?.desc} </p>
+          </>
+        )}
+      </Right>
       <Left>
-        <Top>
-          <ImageContainer>
-            <Images src={post?.image} />
-          </ImageContainer>
-          <OtherImagesContainer>
-            {post?.images?.slice(1)?.map((item, index) => (
-              <OtherImages
-                key={index}
-                src={item}
+        {loading ? (
+          <>
+            <Skeleton
+              variant='rounded'
+              width='100%'
+              height={200}
+              className={darkMode && 'dark'}
+            />
+            <Wrapper>
+              <Skeleton
+                variant='rounded'
+                width={100}
+                height={100}
+                className={darkMode && 'dark'}
               />
-            ))}
-          </OtherImagesContainer>
-        </Top>
-        <Bottom>
-          <TitleWrapper>
-            <TitleContainer>
-              <Title> {post?.title} </Title>
-              <Address>
-                {' '}
-                <LocationOnOutlined className='icon' />
-                {`${post?.location}, ${
-                  post?.city === post?.state
-                    ? post?.state
-                    : `${post?.city},${post?.state}`
-                },${post?.country}`}
-              </Address>
-              <LableContainer>
-                <Label> available for : {post?.type} </Label>
-                <Label> property type : {post?.property} </Label>
-              </LableContainer>
-            </TitleContainer>
-            <UserContainer>
-              {user?._id === post?.user?._id ? (
-                <>
-                  <Button
+              <Skeleton
+                variant='rounded'
+                width={100}
+                height={100}
+                className={darkMode && 'dark'}
+              />
+            </Wrapper>
+            <Skeleton
+              variant='rounded'
+              width='100%'
+              height={250}
+              className={darkMode && 'dark'}
+            />
+          </>
+        ) : (
+          <>
+            <Top>
+              <ImageContainer>
+                <Images src={post?.image} />
+              </ImageContainer>
+              <OtherImagesContainer>
+                {post?.images?.slice(1)?.map((item, index) => (
+                  <OtherImages
+                    key={index}
+                    src={item}
+                  />
+                ))}
+              </OtherImagesContainer>
+            </Top>
+            <Bottom>
+              <TitleWrapper>
+                <TitleContainer>
+                  <Title> {post?.title} </Title>
+                  <Address>
+                    {' '}
+                    <LocationOnOutlined className='icon' />
+                    {`${
+                      post?.city === post?.state
+                        ? post?.state
+                        : `${post?.city},${post?.state}`
+                    },${post?.country}`}
+                  </Address>
+                </TitleContainer>
+                <UserContainer>
+                  <User
+                    className={darkMode ? 'dark' : 'light'}
                     onClick={() =>
-                      navigate('/new/post', { state: { update: true, post } })
+                      navigate(`/profile/@${post?.user?.username}`, {
+                        state: { userID: post?.user?._id },
+                      })
                     }
                   >
-                    {' '}
-                    <Edit /> edit estate{' '}
-                  </Button>
-                </>
-              ) : (
-                <User
-                  className={darkMode ? 'dark' : 'light'}
-                  onClick={() =>
-                    navigate(`/profile/@${post?.user?.username}`, {
-                      state: { userID: post?.user?._id },
-                    })
-                  }
-                >
-                  <Avatar
-                    src={post?.user?.avatar}
-                    alt={post?.user?.username}
-                    className='profile'
-                  />
-                  <Name> {post?.user?.username} </Name>
-                </User>
-              )}
-            </UserContainer>
-          </TitleWrapper>
-          <Description>{post?.desc}</Description>
-          {user?._id === post?.user?._id && (
-            <Button
-              onClick={() =>
-                navigate(`/new/room/${post?._id}`, {
-                  state: { estateName: post?.title },
-                })
-              }
-            >
-              {' '}
-              <Edit /> add a room{' '}
-            </Button>
-          )}
-        </Bottom>
+                    <Avatar
+                      src={post?.user?.avatar}
+                      alt={post?.user?.username}
+                      className='profile'
+                    />
+                    <Name> {post?.user?.username} </Name>
+                  </User>
+                </UserContainer>
+              </TitleWrapper>
+              <MapContainer>
+                <Map
+                  single
+                  posts={[{ coodinates: post?.coodinates }]}
+                />
+              </MapContainer>
+            </Bottom>
+          </>
+        )}
       </Left>
     </Container>
   );

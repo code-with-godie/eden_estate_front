@@ -6,8 +6,9 @@ import { appwriteService } from '../../appWrite/appwriteService';
 import { appwriteConfig } from '../../appWrite/appConfig';
 import { useCallback, useEffect } from 'react';
 const Container = styled.div`
-  height: 100%;
-  position: relative;
+  height: 88vh;
+  position: sticky;
+  top: 50px;
   overflow: hidden;
 `;
 const Messeger = () => {
