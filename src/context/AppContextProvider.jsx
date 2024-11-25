@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import FirstLoading from '../components/loading/FirstLoading';
 const AppContext = createContext({ darkMode: true, toggleTheme: () => {} });
 const AppContextProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [showChat, setShowChat] = useState(false);
@@ -59,6 +59,7 @@ const AppContextProvider = ({ children }) => {
     rooms,
     token,
     showChat,
+    setShowChat,
     openChat,
     closeChat,
     setRooms,

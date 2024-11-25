@@ -57,44 +57,47 @@ const FeaturedRooms = () => {
   useEffect(() => {
     data && setFeatured(data.rooms);
   }, [data]);
-  if (loading) return <FeaturedPlaceSkelton />;
   if (error) return <p>could not load a post</p>;
   return (
     <Container>
       <SubTittle>best choices</SubTittle>
       <Title>Most popular</Title>
-      <Wrapper>
-        <Swiper
-          autoplay={{ delay: 2000 }}
-          loop={true}
-          modules={[Autoplay]}
-          spaceBetween={10}
-          breakpoints={{
-            480: {
-              slidesPerView: 1,
-            },
-            600: {
-              slidesPerView: 2,
-            },
-            768: {
-              slidesPerView: 3,
-            },
-            900: {
-              slidesPerView: 4,
-            },
-          }}
-          className='swiper'
-        >
-          {featured?.map(item => (
-            <SwiperSlide key={item._id}>
-              <Room
-                home
-                {...item}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </Wrapper>
+      {loading ? (
+        <FeaturedPlaceSkelton />
+      ) : (
+        <Wrapper>
+          <Swiper
+            autoplay={{ delay: 2000 }}
+            loop={true}
+            modules={[Autoplay]}
+            spaceBetween={10}
+            breakpoints={{
+              480: {
+                slidesPerView: 1,
+              },
+              600: {
+                slidesPerView: 2,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+              900: {
+                slidesPerView: 4,
+              },
+            }}
+            className='swiper'
+          >
+            {featured?.map(item => (
+              <SwiperSlide key={item._id}>
+                <Room
+                  home
+                  {...item}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </Wrapper>
+      )}
     </Container>
   );
 };

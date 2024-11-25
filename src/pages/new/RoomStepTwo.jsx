@@ -30,16 +30,7 @@ const Item = styled.div`
   gap: 0.5rem;
   padding: 0.5rem;
 `;
-const Input = styled.input`
-  min-width: 0 !important ;
-  flex: 1;
-  padding: 0.5rem;
-  border-radius: 0.3rem;
-  outline: none;
-  background: transparent;
-  border: 1px solid #aaaaaa;
-  color: inherit;
-`;
+
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -47,26 +38,11 @@ const InputWrapper = styled.div`
   color: inherit;
   gap: 0.3rem;
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
-`;
-const Label = styled.p``;
-const LabelSmall = styled.p`
-  font-size: 0.8rem;
-  color: #aaaaaa;
-`;
-const TextArea = styled.textarea`
-  flex: 1;
-  border-radius: 0.3rem;
-  outline: none;
-  padding: 0.5rem;
-  background: transparent;
-  border: 1px solid #aaaaaa;
-  color: inherit;
-  min-height: 100px;
-  resize: vertical;
 `;
 const Button = styled.button`
   padding: 0.5rem 1rem;
@@ -82,19 +58,18 @@ const Button = styled.button`
     background-color: #00000068;
   }
 `;
-const Select = styled.select`
-  padding: 0.5rem;
-  background: transparent;
-  outline: none;
-  border: none;
-  flex: 1;
-  min-width: 0 !important;
-  font-size: 1rem;
-  color: ${props => props.theme.color_primary};
-  border: 1px solid #a6a5a5bf;
-  border-radius: 0.5rem;
+
+// Styled Checkbox that changes based on darkMode
+const StyledCheckbox = styled(Checkbox)`
+  &.Mui-checked {
+    color: ${props => (props.darkMode ? 'white' : 'gray')} !important;
+  }
+
+  &.MuiCheckbox-root {
+    color: ${props => (props.darkMode ? 'white' : 'gray')} !important;
+  }
 `;
-const Option = styled.option``;
+
 const RoomStepTwo = ({
   post,
   setPost,
@@ -105,14 +80,15 @@ const RoomStepTwo = ({
 }) => {
   const [disabled, setDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { token } = useAppContext();
-  const { darkMode } = useAppContext();
+  const { token, darkMode } = useAppContext();
   const navigate = useNavigate();
+
   const onChange = e => {
     const name = e.target.name;
     const value = e.target.checked;
     setPost(prev => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -178,6 +154,7 @@ const RoomStepTwo = ({
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (!post.desc) {
       setDisabled(true);
@@ -185,12 +162,14 @@ const RoomStepTwo = ({
       setDisabled(false);
     }
   }, [post]);
+
   useEffect(() => {
     setDescription(
       'choose room amenities(optional)',
       'what makes this room a good choice?'
     );
   }, [setDescription]);
+
   return (
     <Wrapper>
       <Left>
@@ -198,7 +177,12 @@ const RoomStepTwo = ({
           <Item>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.wifi} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.wifi}
+                  />
+                }
                 name='wifi'
                 onChange={onChange}
                 label='free wifi'
@@ -206,7 +190,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.conditional} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.conditional}
+                  />
+                }
                 name='conditional'
                 onChange={onChange}
                 label='air conditional'
@@ -214,7 +203,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.roomService} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.roomService}
+                  />
+                }
                 name='roomService'
                 onChange={onChange}
                 label='room services'
@@ -222,7 +216,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.breakFast} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.breakFast}
+                  />
+                }
                 name='breakFast'
                 onChange={onChange}
                 label='breakfast'
@@ -230,7 +229,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.tv} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.tv}
+                  />
+                }
                 name='tv'
                 onChange={onChange}
                 label='Tv'
@@ -238,7 +242,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.balcony} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.balcony}
+                  />
+                }
                 name='balcony'
                 onChange={onChange}
                 label='balcony'
@@ -246,15 +255,25 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.ocean} />}
-                label='ocen view'
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.ocean}
+                  />
+                }
+                label='ocean view'
                 name='ocean'
                 onChange={onChange}
               />
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.forest} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.forest}
+                  />
+                }
                 name='forest'
                 onChange={onChange}
                 label='forest view'
@@ -262,7 +281,12 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.mountain} />}
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.mountain}
+                  />
+                }
                 label='mountain view'
                 name='mountain'
                 onChange={onChange}
@@ -270,8 +294,13 @@ const RoomStepTwo = ({
             </FormGroup>
             <FormGroup>
               <FormControlLabel
-                control={<Checkbox value={post?.soundProve} />}
-                label='sound prove'
+                control={
+                  <StyledCheckbox
+                    darkMode={darkMode}
+                    value={post?.soundProve}
+                  />
+                }
+                label='sound proof'
                 name='soundProve'
                 onChange={onChange}
               />

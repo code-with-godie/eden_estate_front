@@ -10,11 +10,14 @@ const Container = styled(motion.div)`
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 70%;
+  height: 100%;
   z-index: 200;
   display: flex;
   flex-direction: column;
-  background-color: ${props => (props.dark ? '#303030' : '#9898981b')};
+  background-color: ${props => (props.dark ? '#303030' : '#ffffff')};
+  @media screen and (min-width: 768px) {
+    height: 70%;
+  }
 `;
 const Header = styled.div`
   display: flex;

@@ -70,21 +70,28 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
   const [cities, setCities] = useState([]);
   const { darkMode } = useAppContext();
   const [disabled, setDisabled] = useState(false);
+
   const onChange = e => {
     const name = e.target.name;
     const value = e.target.value;
     setPost(prev => ({ ...prev, [name]: value }));
   };
+
   const handleCountry = e => {
     const value = e.target.value;
     setPost(prev => ({ ...prev, country: { ISOCode: value } }));
+    // Ensure states are reset when a new country is selected
+    setState([]); // Clear previous states
+    setCities([]); // Clear cities as well
   };
+
   const handleState = e => {
     const value = e.target.value;
-
     setPost(prev => ({ ...prev, state: { ISOCode: value } }));
   };
+
   useEffect(() => {
+    // Disable button if required fields are missing
     if (
       !post.title ||
       !post.price ||
@@ -97,25 +104,31 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
       setDisabled(false);
     }
   }, [post]);
+
   useEffect(() => {
     setDescription('Estate name and location details');
   }, [setDescription]);
+
   useEffect(() => {
+    // Fetch states when the country is selected
     if (post?.country) {
-      const state = getCountryStates(post?.country);
-      if (state) {
-        setState(state);
+      const fetchedStates = getCountryStates(post?.country);
+      if (fetchedStates) {
+        setState(fetchedStates);
       }
     }
   }, [post?.country, getCountryStates]);
+
   useEffect(() => {
+    // Fetch cities when the state is selected
     if (post?.state) {
-      const cities = getStatesCities(post?.country, post?.state);
-      if (cities) {
-        setCities(cities);
+      const fetchedCities = getStatesCities(post?.country, post?.state);
+      if (fetchedCities) {
+        setCities(fetchedCities);
       }
     }
-  }, [post, getStatesCities]);
+  }, [post?.state, post?.country, getStatesCities]);
+
   return (
     <Wrapper>
       <Left>

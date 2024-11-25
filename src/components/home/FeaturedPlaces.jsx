@@ -58,40 +58,42 @@ const FeaturedPlaces = () => {
   useEffect(() => {
     data && setFeatured(data.posts);
   }, [data]);
-  if (loading) return <FeaturedPlaceSkelton />;
   if (error) return <p>could not load a post</p>;
   return (
     <Container>
       <SubTittle>best choices</SubTittle>
       <Title>Featured estates</Title>
-      <Wrapper>
-        <Swiper
-          autoplay={{ delay: 2000 }}
-          loop={true}
-          modules={[Autoplay]}
-          spaceBetween={10}
-          breakpoints={{
-            480: {
-              slidesPerView: 1,
-            },
-            600: {
-              slidesPerView: 2,
-            },
-            768: {
-              slidesPerView: 3,
-            },
-            900: {
-              slidesPerView: 4,
-            },
-          }}
-          className='swiper'
-        >
-          {featured.map(item => (
-            <SwiperSlide key={item._id}>
-              <Slide {...item} />
-            </SwiperSlide>
-          ))}
-          {/* <IconButton
+      {loading ? (
+        <FeaturedPlaceSkelton />
+      ) : (
+        <Wrapper>
+          <Swiper
+            autoplay={{ delay: 2000 }}
+            loop={true}
+            modules={[Autoplay]}
+            spaceBetween={10}
+            breakpoints={{
+              480: {
+                slidesPerView: 1,
+              },
+              600: {
+                slidesPerView: 2,
+              },
+              768: {
+                slidesPerView: 3,
+              },
+              900: {
+                slidesPerView: 4,
+              },
+            }}
+            className='swiper'
+          >
+            {featured.map(item => (
+              <SwiperSlide key={item._id}>
+                <Slide {...item} />
+              </SwiperSlide>
+            ))}
+            {/* <IconButton
             className='btn left'
             onClick={() => swiper?.slidePrev()}
           >
@@ -105,8 +107,9 @@ const FeaturedPlaces = () => {
             {' '}
             <MdKeyboardArrowRight />{' '}
           </IconButton> */}
-        </Swiper>
-      </Wrapper>
+          </Swiper>
+        </Wrapper>
+      )}
     </Container>
   );
 };

@@ -20,6 +20,11 @@ const Container = styled.div`
     height: 200px; */
     height: 100%;
   }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  cursor: pointer;
 `;
 const RoomsSkelton = () => {
   const { darkMode } = useAppContext();

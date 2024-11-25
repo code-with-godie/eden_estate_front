@@ -128,7 +128,9 @@ const UpdateDetails = () => {
         updateUser(user);
         setImage('');
         setUser({ username: '', email: '' });
-        navigate(`/profile/@${user?.username}`);
+        navigate(`/profile/@${user?.username}`, {
+          state: { userID: user?._id },
+        });
       }
     } catch (error) {
       console.log(error);

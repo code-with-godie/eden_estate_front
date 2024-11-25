@@ -65,10 +65,10 @@ class AppWriteService {
           { members }
         );
         console.log('created a new room');
-        return room;
+        return { created: true, room };
       } else {
         console.log('room alreday exists');
-        return room.documents[0];
+        return { created: false, room: room.documents[0] };
       }
     } catch (error) {
       throw new Error(error);

@@ -120,7 +120,6 @@ const CreatePost = () => {
     property: 'apartment',
     utilities: 'Owner is responsible',
     pet: 'pet are allowed',
-    type: 'rent',
     desc: '',
     image,
   });
@@ -139,9 +138,16 @@ const CreatePost = () => {
   return (
     <Wrapper>
       <Left>
-        <Title>Bring your estate online </Title>
+        <Title>
+          {' '}
+          {edit
+            ? `Update ${post?.title} estate`
+            : 'Bring your estate online'}{' '}
+        </Title>
         <Description>
-          just a few step and you join million of lardlords all across th globe
+          {edit
+            ? `This estate is located at ${post.state?.name}, ${post?.country?.name}`
+            : ' just a few step and you join million of lardlords all across th globe'}
         </Description>
         <SmallTitle> {desc} </SmallTitle>
         <Right className='small'>

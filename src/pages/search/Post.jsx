@@ -91,7 +91,7 @@ const IconWrapper = styled.div`
     cursor: pointer;
   }
 `;
-const Post = ({ handleMessege, variants, ...post }) => {
+const Post = ({ variants, ...post }) => {
   const navigate = useNavigate();
   const {
     state,
@@ -106,7 +106,18 @@ const Post = ({ handleMessege, variants, ...post }) => {
     type,
   } = post;
   const [bookmarked, setBookmarked] = useState(false);
+
   const { user, token, updateUser } = useAppContext();
+  const handleMessege = async e => {
+    e.stopPropagation();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    navigate(`/profile/@${postUser?.username}`, {
+      state: { userID: postUser?._id },
+    });
+  };
   const handleBookmark = async e => {
     e.stopPropagation();
     if (!user) {

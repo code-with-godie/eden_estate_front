@@ -18,6 +18,11 @@ const Container = styled.div`
     height: 100%;
     flex: 1 0 200px;
   }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+  cursor: pointer;
 `;
 const FeaturedPlaceSkelton = () => {
   const { darkMode } = useAppContext();

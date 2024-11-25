@@ -1,6 +1,5 @@
 import {
   FavoriteBorderOutlined,
-  JoinFull,
   Logout,
   Person2Outlined,
 } from '@mui/icons-material';
@@ -79,17 +78,9 @@ const AccountModel = ({ showModel, setLogoutModel, setShowModel }) => {
         <FavoriteBorderOutlined className='icon' />
         <ItemLabel>create an estate</ItemLabel>
       </Item>
-      <Item onClick={() => handleNavigate('/partner')}>
-        <JoinFull className='icon' />
-        <ItemLabel>partner</ItemLabel>
-      </Item>
       <Item onClick={handleLogout}>
         <Logout className='icon' />
         <ItemLabel>logout</ItemLabel>
-      </Item>
-      <Item onClick={() => handleNavigate('/new')}>
-        <FavoriteBorderOutlined className='icon' />
-        <ItemLabel>create dish</ItemLabel>
       </Item>
     </Container>
   );

@@ -5,15 +5,27 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { FaMoon, FaSun } from 'react-icons/fa';
 import { Home, Login, Phone, SignpostOutlined } from '@mui/icons-material';
 import { Avatar } from '@mui/material';
+
+const Wrapper = styled.section`
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: all 300ms;
+  overflow: hidden;
+  display: flex;
+  justify-content: end;
+  align-items: start;
+  padding: 3.5rem 1rem 0 0;
+  visibility: ${props => (props.open ? 'visible' : 'hidden')};
+`;
 const Container = styled(motion.div)`
   background: ${props => props.theme.bg_primary};
   box-shadow: 0px 0px 5px 3px ${props => (props.dark ? '#2f2e2eb6' : '#dad7d7')};
-  position: absolute;
-  top: 3.5rem;
-  z-index: 100;
-  right: 1rem;
-  /* min-height: 400px; */
-  width: 100vw;
+  width: 100%;
   max-width: 200px;
   border-radius: 0.5rem;
   padding: 0.5rem;
@@ -80,89 +92,105 @@ const Sidenav = ({ setShowModel }) => {
   };
   const navigate = useNavigate();
   return (
-    <Container
-      variants={variants}
-      animate={isDrawerOpen ? 'visible' : 'hidden'}
-      dark={darkMode}
+    <Wrapper
+      onClick={closeDrawer}
+      open={isDrawerOpen}
     >
-      <NavLink
-        onClick={closeDrawer}
-        className='link'
-        to='/'
+      <Container
+        variants={variants}
+        animate={isDrawerOpen ? 'visible' : 'hidden'}
+        dark={darkMode}
       >
-        <Item>
-          <Home />
-          <Label>Home</Label>
-        </Item>
-      </NavLink>
-      <NavLink
-        onClick={closeDrawer}
-        className='link'
-        to='/about'
-      >
-        <Item>
-          <Home />
-          <Label>About</Label>
-        </Item>
-      </NavLink>
-      <NavLink
-        className='link'
-        to='/contacts'
-        onClick={closeDrawer}
-      >
-        <Item>
-          <Phone />
-          <Label>Contacts</Label>
-        </Item>
-      </NavLink>
-      <div
-        style={{ cursor: 'pointer', padding: '.5rem' }}
-        className='icon'
-        onClick={handleClick}
-      >
-        <Item>
-          {darkMode ? <FaMoon /> : <FaSun />}
-          <Label> {darkMode ? 'Dark mode' : 'Light Mode'} </Label>
-        </Item>
-      </div>
-      {user ? (
-        <UserDetails>
-          <Item
-            className='profile'
-            onClick={handleProfile}
-          >
-            <Avatar
-              src={user?.avatar}
-              alt={user?.username}
-            />
-            <Label>welcome, {user?.username} </Label>
+        <NavLink
+          onClick={closeDrawer}
+          className='link'
+          to='/'
+        >
+          <Item>
+            <Home />
+            <Label>Home</Label>
           </Item>
-        </UserDetails>
-      ) : (
-        <>
-          <NavLink
-            className='link'
-            to='/login'
-            onClick={closeDrawer}
-          >
-            <Item>
-              <Login />
-              <Label>sign in</Label>
+        </NavLink>
+        <NavLink
+          onClick={closeDrawer}
+          className='link'
+          to='/search'
+        >
+          <Item>
+            <Home />
+            <Label>Estate</Label>
+          </Item>
+        </NavLink>
+        <NavLink
+          className='link'
+          to='/contacts'
+          onClick={closeDrawer}
+        >
+          <Item>
+            <Phone />
+            <Label>Contacts</Label>
+          </Item>
+        </NavLink>
+        <div
+          style={{ cursor: 'pointer', padding: '.5rem' }}
+          className='icon'
+          onClick={handleClick}
+        >
+          <Item>
+            {darkMode ? <FaMoon /> : <FaSun />}
+            <Label> {darkMode ? 'Dark mode' : 'Light Mode'} </Label>
+          </Item>
+        </div>
+        {user ? (
+          <UserDetails>
+            <Item
+              className='profile'
+              onClick={handleProfile}
+            >
+              <Avatar
+                src={user?.avatar}
+                alt={user?.username}
+              />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '.3rem',
+                  flex: '1',
+                  overflow: 'hidden',
+                }}
+              >
+                <Label>welcome </Label>
+                <Label>{user?.username} </Label>
+              </div>
             </Item>
-          </NavLink>
-          <NavLink
-            className='link'
-            to='/register'
-            onClick={closeDrawer}
-          >
-            <Item>
-              <SignpostOutlined />
-              <Label>sign up</Label>
-            </Item>
-          </NavLink>
-        </>
-      )}
-    </Container>
+          </UserDetails>
+        ) : (
+          <>
+            <NavLink
+              className='link'
+              to='/login'
+              onClick={closeDrawer}
+            >
+              <Item>
+                <Login />
+                <Label>sign in</Label>
+              </Item>
+            </NavLink>
+            <NavLink
+              className='link'
+              to='/register'
+              onClick={closeDrawer}
+            >
+              <Item>
+                <SignpostOutlined />
+                <Label>sign up</Label>
+              </Item>
+            </NavLink>
+          </>
+        )}
+      </Container>
+    </Wrapper>
   );
 };
 

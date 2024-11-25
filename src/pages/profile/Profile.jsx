@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
-import { Avatar } from '@mui/material';
+import { Avatar, IconButton } from '@mui/material';
 import PostList from '../search/PostList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
@@ -10,6 +10,7 @@ import SearchSkeleton from '../../components/skeletons/SearchSkelton';
 import Messeger from '../../components/messeger/Messeger';
 import { appwriteService } from '../../appWrite/appwriteService';
 import saved from '../../assets/saved.png';
+import { Chat } from '@mui/icons-material';
 const Container = styled.div`
   display: flex;
   overflow: auto;
@@ -82,6 +83,20 @@ const UserItem = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  &.profile {
+    gap: 2rem;
+    justify-content: space-between;
+    flex: 1;
+  }
+  .icon {
+    color: ${props => (props.dark ? 'white' : 'gray')};
+    font-size: 3rem;
+  }
+  .btn {
+    @media screen and (min-width: 768px) {
+      display: none;
+    }
+  }
 `;
 const Label = styled.p`
   &:first-child {
@@ -106,7 +121,15 @@ const Image = styled.img`
 `;
 
 const Profile = () => {
-  const { user: loggedInUser, logout, showChat, setRooms } = useAppContext();
+  const {
+    user: loggedInUser,
+    logout,
+    showChat,
+    setRooms,
+    darkMode,
+    setShowChat,
+    setConversation,
+  } = useAppContext();
   const [user, setUser] = useState({});
 
   const handleLogout = () => {
@@ -140,13 +163,29 @@ const Profile = () => {
         navigate('/login');
         return;
       }
-
       setCreating(true);
-      const room = await appwriteService.createRoom([
-        loggedInUser?._id,
-        userID,
-      ]);
-      setRooms(prev => [room, ...prev?.filter(item => item.$id !== room?.$id)]);
+      const res = await appwriteService.createRoom([loggedInUser?._id, userID]);
+      if (res?.created) {
+        setRooms(prev => [
+          res?.room,
+          ...prev?.filter(item => item.$id !== res?.room?.$id),
+        ]);
+        const con = {
+          roomID: res?.room?.$id,
+          ...user,
+          messeges: res?.room?.messeges,
+        };
+        localStorage.setItem('eden_estate_conversation', JSON.stringify(con));
+        setConversation(con);
+      } else {
+        const con = {
+          roomID: res?.room?.$id,
+          ...user,
+          messeges: res?.room?.messeges,
+        };
+        localStorage.setItem('eden_estate_conversation', JSON.stringify(con));
+        setConversation(con);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -180,8 +219,10 @@ const Profile = () => {
           )}
         </Header>
         <UserInfo>
-          <UserItem>
-            <Label>Avatar:</Label>
+          <UserItem
+            dark={darkMode}
+            className='profile'
+          >
             <Label>
               {' '}
               <Avatar
@@ -189,6 +230,16 @@ const Profile = () => {
                 src={user?.avatar}
                 alt={user?.username}
               />{' '}
+            </Label>
+            <Label>
+              {' '}
+              <IconButton
+                className='btn'
+                onClick={() => setShowChat(prev => !prev)}
+              >
+                {' '}
+                <Chat className='icon' />{' '}
+              </IconButton>{' '}
             </Label>
           </UserItem>
           <UserItem>

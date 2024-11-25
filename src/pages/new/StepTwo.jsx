@@ -140,7 +140,12 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
       if (edit) {
         const res = await updateData(
           `/posts/update/${post?._id}`,
-          { ...post, image, country: country.name, state: state.name },
+          {
+            ...post,
+            image,
+            country: { ISOCode: country.isoCode, name: country.name },
+            state: { ISOCode: state.isoCode, name: state.name },
+          },
           token
         );
         if (res.success) {
@@ -164,7 +169,12 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
 
       const res = await postData(
         '/posts',
-        { ...post, image, country: country.name, state: state.name },
+        {
+          ...post,
+          image,
+          country: { ISOCode: country.isoCode, name: country.name },
+          state: { ISOCode: state.isoCode, name: state.name },
+        },
         token
       );
       if (res.success) {

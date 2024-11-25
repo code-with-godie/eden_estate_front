@@ -25,7 +25,7 @@ const Image = styled.img`
   object-fit: contain;
 `;
 const Message = styled.p``;
-const PostList = ({ posts, scroll, handleMessege, message }) => {
+const PostList = ({ posts, scroll, message }) => {
   const variants = {
     initial: { opacity: 0 },
     animate: { opacity: 1, transition: { staggerChildren: 1 } },
@@ -46,7 +46,6 @@ const PostList = ({ posts, scroll, handleMessege, message }) => {
     >
       {posts.map(item => (
         <Post
-          handleMessege={handleMessege}
           variants={variants}
           key={item._id}
           {...item}

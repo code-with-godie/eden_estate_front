@@ -6,25 +6,28 @@ import PostList from './PostList';
 import { useFetch } from '../../api/useFetch';
 import { useEffect, useState } from 'react';
 import SearchSkelton from '../../components/skeletons/SearchSkelton';
+import { useAppContext } from '../../context/AppContextProvider';
+
 const Container = styled.div`
   display: flex;
   overflow: auto;
-  height: 91.5vh;
   gap: 0.5rem;
   padding: 1rem 0 0 0;
   flex-direction: column;
   cursor: pointer;
   @media screen and (min-width: 768px) {
     flex-direction: row;
-    /* align-items: flex-start; */
+    height: 91.5vh;
   }
 `;
+
 const Left = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 `;
+
 const Right = styled.div`
   flex: 1;
   position: sticky;
@@ -37,10 +40,13 @@ const Right = styled.div`
     max-width: 500px;
   }
 `;
+
 const Introduction = styled.p`
   font-size: 1.2rem;
 `;
+
 const Label = styled.p``;
+
 const InputContainer = styled.div`
   display: flex;
   padding: 0.5rem;
@@ -53,6 +59,7 @@ const InputContainer = styled.div`
     flex: 1;
   }
 `;
+
 const Input = styled.input`
   background: transparent;
   outline: none;
@@ -62,21 +69,40 @@ const Input = styled.input`
   font-size: 1rem;
   color: ${props => props.theme.color_primary};
 `;
+
 const Select = styled.select`
   padding: 0.5rem;
   background: transparent;
+  color: ${props => (props.dark ? '#fff' : '#000')};
   outline: none;
-  border: none;
+  border: 1px solid #a6a5a5bf; /* Match the border with other inputs */
+  border-radius: 0.3rem;
   flex: 1;
   min-width: 0 !important;
   font-size: 1rem;
-  color: ${props => props.theme.color_primary};
-  border: 1px solid #a6a5a5bf;
+
+  /* Styling for options */
+  option {
+    background-color: transparent; /* Transparent background for options */
+    color: ${props =>
+      props.theme?.darkMode ? '#fff' : '#000'}; /* Text color for options */
+    padding: 0.5rem;
+  }
+
+  /* Remove blue hover and focus on option elements */
+  option:hover {
+    background-color: ${props =>
+      props.theme.darkMode ? '#555' : '#ddd'}; /* Change background on hover */
+    color: ${props =>
+      props.dark ? '#fff' : '#000'}; /* Change text color on hover */
+  }
 `;
+
 const Option = styled.option`
   background-color: transparent;
   appearance: none;
 `;
+
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -86,11 +112,13 @@ const Form = styled.form`
     align-items: flex-end;
   }
 `;
+
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
 `;
+
 const SubmitButton = styled.button`
   background: var(--faded_blue);
   outline: none;
@@ -106,7 +134,9 @@ const SubmitButton = styled.button`
     align-items: center;
   }
 `;
+
 const Search = () => {
+  const { darkMode } = useAppContext();
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState({
     type: searchParams.get('type') || '',
@@ -125,21 +155,26 @@ const Search = () => {
       'maxPrice'
     )}`
   );
+
   const onChange = e => {
     const name = e.target.name;
     const value = e.target.value;
     setQuery(prev => ({ ...prev, [name]: value }));
   };
+
   const handleSubmit = e => {
     e.preventDefault();
     setSearchParams(query);
   };
+
   useEffect(() => {
     data && setPosts(data?.posts);
   }, [data]);
+
   if (error) {
     console.log(error);
   }
+
   return (
     <Container>
       <Left>
@@ -152,7 +187,7 @@ const Search = () => {
             onChange={onChange}
             name='location'
             value={query.location}
-            laceholder='location'
+            placeholder='location'
           />
         </InputContainer>
         <Form onSubmit={handleSubmit}>
@@ -162,6 +197,7 @@ const Search = () => {
               <Select
                 onChange={onChange}
                 name='type'
+                dark={darkMode}
                 value={query.type}
               >
                 <Option>rent</Option>
@@ -169,10 +205,11 @@ const Search = () => {
               </Select>
             </InputWrapper>
             <InputWrapper>
-              <Label>property</Label>
+              <Label>Property</Label>
               <Select
                 onChange={onChange}
                 name='property'
+                dark={darkMode}
                 value={query.property}
               >
                 <Option>apartment</Option>
@@ -184,7 +221,7 @@ const Search = () => {
           </InputContainer>
           <InputContainer className='container'>
             <InputWrapper>
-              <Label>pet options</Label>
+              <Label>Min Price</Label>
               <InputContainer>
                 <Input
                   placeholder='0'
@@ -196,7 +233,7 @@ const Search = () => {
               </InputContainer>
             </InputWrapper>
             <InputWrapper>
-              <Label>maxPrice</Label>
+              <Label>Max Price</Label>
               <InputContainer>
                 <Input
                   placeholder='0'
@@ -210,16 +247,16 @@ const Search = () => {
           </InputContainer>
           <SubmitButton>
             <SearchOutlined />
-            search
+            Search
           </SubmitButton>
         </Form>
         {error ? (
-          <p>could not load posts</p>
+          <p>Could not load posts</p>
         ) : loading ? (
           <SearchSkelton />
         ) : (
           <PostList
-            message={`no results for your search ${searchParams.get(
+            message={`No results for your search in ${searchParams.get(
               'location'
             )}`}
             posts={posts}
