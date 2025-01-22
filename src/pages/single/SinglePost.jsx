@@ -185,11 +185,17 @@ const SinglePost = () => {
               <Address>
                 {' '}
                 <LocationOnOutlined className='icon' />
-                {`${
-                  post?.city === post?.state
-                    ? post?.state
-                    : `${post?.city},${post?.state}`
-                },${post?.country}`}
+                {typeof country === 'string' && typeof state === 'string'
+                  ? `${
+                      post?.city === post?.state
+                        ? post?.state
+                        : `${post?.city},${post?.state}`
+                    },${post?.country}`
+                  : `${
+                      post?.city === post?.state?.name
+                        ? post?.state?.name
+                        : `${post?.city},${post?.state?.name}`
+                    },${post?.country?.name}`}
               </Address>
               <LableContainer>
                 <Label> available for : {post?.type} </Label>

@@ -79,15 +79,14 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
 
   const handleCountry = e => {
     const value = e.target.value;
-    setPost(prev => ({ ...prev, country: { ISOCode: value } }));
-    // Ensure states are reset when a new country is selected
+    setPost(prev => ({ ...prev, country: value }));
     setState([]); // Clear previous states
     setCities([]); // Clear cities as well
   };
 
   const handleState = e => {
     const value = e.target.value;
-    setPost(prev => ({ ...prev, state: { ISOCode: value } }));
+    setPost(prev => ({ ...prev, state: value }));
   };
 
   useEffect(() => {
@@ -95,8 +94,8 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
     if (
       !post.title ||
       !post.price ||
-      !post.country?.ISOCode ||
-      !post.state?.ISOCode ||
+      !post.country ||
+      !post.state ||
       !post.city
     ) {
       setDisabled(true);
@@ -159,7 +158,7 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               <FormControl fullWidth>
                 <Select
                   name='country'
-                  value={post?.country?.ISOCode}
+                  value={post?.country}
                   onChange={handleCountry}
                   sx={{
                     '& .MuiOutlinedInput-notchedOutline': {
@@ -212,7 +211,7 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               <Select
                 name='state'
                 disabled={states.length <= 0}
-                value={post?.state?.ISOCode}
+                value={post?.state}
                 onChange={handleState}
                 sx={{
                   '& .MuiOutlinedInput-notchedOutline': {

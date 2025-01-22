@@ -14,6 +14,7 @@ import CreatePost from '../pages/new/CreatePost';
 import UpdateUser from '../pages/update/UpdateDetails';
 import NewRoom from '../pages/new/NewRoom';
 import Booking from '../pages/booking/Booking';
+import SuccessPage from '../pages/success/Success';
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -77,6 +78,10 @@ export const router = createBrowserRouter([
           {
             path: '/new/room/:hotelId',
             element: <NewRoom />,
+          },
+          {
+            path: '/success',
+            element: <SuccessPage />,
           },
         ],
       },

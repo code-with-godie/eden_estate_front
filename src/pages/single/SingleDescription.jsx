@@ -86,12 +86,16 @@ const Control = styled.div`
 const SingleDescription = ({
   utilities,
   pet,
+  image,
+  price,
   income,
   size,
   bus,
   school,
   coodinates,
   restaurant,
+  country,
+  state,
   bedrooms,
   bathrooms,
 }) => {
@@ -200,10 +204,9 @@ const SingleDescription = ({
       <Title>Location</Title>
       <Wrapper className={darkMode ? 'dark' : 'light'}>
         <MapContainer>
-          <Map
-            single
-            posts={[{ coodinates }]}
-          />
+          {coodinates && (
+            <Map posts={[{ country, state, image, price, coodinates }]} />
+          )}
         </MapContainer>
       </Wrapper>
       <Control className={darkMode ? 'dark' : 'light'}>

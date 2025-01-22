@@ -64,7 +64,11 @@ const Slide = ({ image, desc, location, city, state, country, title, _id }) => {
         <Title>
           {' '}
           <LocationOnOutlined className='icon' />
-          {`${city === state ? state : `${city},${state}`},${country}`}{' '}
+          {typeof country === 'string' && typeof state === 'string'
+            ? `${city === state ? state : `${city},${state}`},${country}`
+            : `${
+                city === state?.name ? state?.name : `${city},${state?.name}`
+              },${country?.name}`}
         </Title>
         <Description>
           {' '}

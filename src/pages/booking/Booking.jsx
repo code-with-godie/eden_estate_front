@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { LocationOnOutlined } from '@mui/icons-material';
@@ -153,7 +153,6 @@ const Booking = () => {
   }, [data]);
   useEffect(() => {
     roomData && setRoom(roomData?.room);
-    console.log(roomData);
   }, [roomData]);
   // if (loading) return <SinglePostSkelton />;
   if (error) return <p>could not load a post</p>;
@@ -170,7 +169,12 @@ const Booking = () => {
           />
         ) : (
           <>
-            {room && <Room {...room} />}
+            {room && (
+              <Room
+                showPicker
+                {...room}
+              />
+            )}
             <p> {post?.desc} </p>
           </>
         )}
@@ -253,10 +257,18 @@ const Booking = () => {
                 </UserContainer>
               </TitleWrapper>
               <MapContainer>
-                <Map
-                  single
-                  posts={[{ coodinates: post?.coodinates }]}
-                />
+                {post && (
+                  <Map
+                    posts={[
+                      {
+                        image: post?.image,
+                        country: post?.country,
+                        state: post?.state,
+                        coodinates: post?.coodinates,
+                      },
+                    ]}
+                  />
+                )}
               </MapContainer>
             </Bottom>
           </>

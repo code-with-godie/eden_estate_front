@@ -32,6 +32,9 @@ const Header = styled.div`
       display: none;
     }
   }
+  .icon {
+    color: #d12727;
+  }
 `;
 
 const Title = styled.h1`
@@ -95,7 +98,7 @@ const Rooms = () => {
           onClick={() => closeChat()}
         >
           {' '}
-          <Close />{' '}
+          <Close className='icon' />{' '}
         </IconButton>
       </Header>
       {rooms.map(item => (

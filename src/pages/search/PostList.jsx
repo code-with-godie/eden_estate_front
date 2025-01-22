@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Post from './Post';
 import { motion } from 'framer-motion';
-import saved from '../../assets/saved.png';
+import saved from '../../assets/not-found.png';
 const PostContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;

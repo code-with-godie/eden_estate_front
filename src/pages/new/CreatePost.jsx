@@ -97,13 +97,11 @@ const CreatePost = () => {
   const [post, setPost] = useState({
     title: '',
     price: '',
-    country: {
-      ISOCode: '',
-      name: '',
-    },
-    state: {
-      ISOCode: '',
-      name: '',
+    country: '',
+    state: '',
+    breakfast: {
+      offered: false,
+      price: '',
     },
     city: '',
     location: '',
@@ -125,13 +123,27 @@ const CreatePost = () => {
   });
 
   useEffect(() => {
-    console.log(location);
     if (location?.state?.post) {
       let { post, update } = location.state;
       const { user, ...tempPost } = post;
       post = { ...tempPost };
       setEdit(update);
-      setPost(post);
+      setPost(() => {
+        if (typeof post?.country === 'string') {
+          console.log('found post', post);
+
+          return post;
+        } else {
+          const newPost = {
+            ...post,
+            country: post?.country?.ISOCode,
+            state: post?.state?.ISOCode,
+          };
+          console.log('found new post', newPost);
+
+          return newPost;
+        }
+      });
       setImage(post?.image);
     }
   }, [location]);

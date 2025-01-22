@@ -1,5 +1,4 @@
 import {
-  Bathroom,
   Bed,
   BookmarkBorderOutlined,
   BookmarkOutlined,
@@ -148,7 +147,11 @@ const Post = ({ variants, ...post }) => {
         <Title> {title} </Title>
         <Address>
           <LocationOnOutlined className='icon' />
-          {`${city === state ? state : `${city},${state}`},${country}`}
+          {typeof country === 'string' && typeof state === 'string'
+            ? `${city === state ? state : `${city},${state}`},${country}`
+            : `${
+                city === state?.name ? state?.name : `${city},${state?.name}`
+              },${country?.name}`}
         </Address>
         <Price> available for {type} </Price>
         <Desc> click to book a room here </Desc>

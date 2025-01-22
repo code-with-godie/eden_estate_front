@@ -50,7 +50,7 @@ const Footer = () => {
   return (
     <Container>
       <FooterItem>
-        <TextTitle>Discover Fresh grub</TextTitle>
+        <TextTitle>Discover Property in Eden Estate</TextTitle>
         <TextWrapper>
           <Text>Investors</Text>
           <Text>About Us</Text>
@@ -58,10 +58,10 @@ const Footer = () => {
           <Text>Engineering blog</Text>
           <Text>Design blog</Text>
           <Text>Gift Cards </Text>
-          <Text>Fast Food Student</Text>
+          <Text>Eden Estates</Text>
           <Text>Careers</Text>
-          <Text>Restaurant signup</Text>
-          <Text>Become a rider</Text>
+          <Text> signup</Text>
+          <Text>Become a partner</Text>
         </TextWrapper>
       </FooterItem>
       <FooterItem>

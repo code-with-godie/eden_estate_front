@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { postData, updateData } from '../../api/apiCalls';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import { useLocation } from '../../hooks/useLocation';
+import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 
 const Wrapper = styled.div`
   display: flex;
@@ -42,6 +43,10 @@ const Input = styled.input`
   background: transparent;
   border: 1px solid #aaaaaa;
   color: inherit;
+  :disabled {
+    background-color: #808080a5;
+    cursor: not-allowed;
+  }
 `;
 const InputWrapper = styled.div`
   display: flex;
@@ -97,6 +102,15 @@ const Select = styled.select`
   border: 1px solid #a6a5a5bf;
   border-radius: 0.5rem;
 `;
+const StyledCheckbox = styled(Checkbox)`
+  &.Mui-checked {
+    color: ${props => (props.darkMode ? 'white' : 'gray')} !important;
+  }
+
+  &.MuiCheckbox-root {
+    color: ${props => (props.darkMode ? 'white' : 'gray')} !important;
+  }
+`;
 const Option = styled.option``;
 const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
   const [disabled, setDisabled] = useState(false);
@@ -110,6 +124,21 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
     const value = e.target.value;
     setPost(prev => ({ ...prev, [name]: value }));
   };
+  const handleBreakfast = e => {
+    const name = e.target.name;
+    const value =
+      e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setPost(prev => {
+      const breakfast = {
+        ...prev.breakfast,
+        [name]: value,
+      };
+      return {
+        ...prev,
+        breakfast,
+      };
+    });
+  };
   const handleSubmit = async e => {
     e.preventDefault();
     try {
@@ -120,6 +149,16 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
       if (city) {
         const { longitude, latitude } = city;
         post.coodinates = { longitude, latitude };
+      }
+      if (country && state) {
+        post.country = {
+          ISOCode: country?.isoCode,
+          name: country?.name,
+        };
+        post.state = {
+          ISOCode: state?.isoCode,
+          name: state?.name,
+        };
       }
       if (!image) {
         toast.error('estate image is required', {
@@ -143,8 +182,6 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
           {
             ...post,
             image,
-            country: { ISOCode: country.isoCode, name: country.name },
-            state: { ISOCode: state.isoCode, name: state.name },
           },
           token
         );
@@ -172,8 +209,6 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
         {
           ...post,
           image,
-          country: { ISOCode: country.isoCode, name: country.name },
-          state: { ISOCode: state.isoCode, name: state.name },
         },
         token
       );
@@ -232,6 +267,21 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
               />
             </InputWrapper>
             <InputWrapper>
+              <Label>property*</Label>
+              <Select
+                name='property'
+                value={post.property}
+                onChange={onChange}
+              >
+                <Option>apartment</Option>
+                <Option>house</Option>
+                <Option>condo</Option>
+                <Option>land</Option>
+              </Select>
+            </InputWrapper>
+          </Item>
+          <Item>
+            <InputWrapper>
               <Label>total size(sqrt)</Label>
               <Input
                 name='size'
@@ -270,19 +320,6 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
           </Item>
           <Item className='small'>
             <InputWrapper>
-              <Label>property*</Label>
-              <Select
-                name='property'
-                value={post.property}
-                onChange={onChange}
-              >
-                <Option>apartment</Option>
-                <Option>house</Option>
-                <Option>condo</Option>
-                <Option>land</Option>
-              </Select>
-            </InputWrapper>
-            <InputWrapper>
               <Label>utility policies</Label>
               <Select
                 name='utilities'
@@ -304,6 +341,30 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
                 <Option>pet are allowed</Option>
                 <Option>pet are not allowed</Option>
               </Select>
+            </InputWrapper>
+            <InputWrapper>
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <StyledCheckbox
+                      checked={post?.breakfast?.offered}
+                      darkMode={darkMode}
+                      value={post?.breakfast?.offered}
+                    />
+                  }
+                  name='offered'
+                  onChange={handleBreakfast}
+                  label='breakfast available'
+                />
+              </FormGroup>
+              <Input
+                name='price'
+                type='number'
+                disabled={!post?.breakfast?.offered}
+                value={post.breakfast?.price}
+                onChange={handleBreakfast}
+                placeholder='breakfast price'
+              />
             </InputWrapper>
           </Item>
           <ButtonWrapper>
