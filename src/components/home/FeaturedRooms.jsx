@@ -57,10 +57,15 @@ const FeaturedRooms = () => {
   useEffect(() => {
     data && setFeatured(data.rooms);
   }, [data]);
-  if (error) return <p>could not load a post</p>;
+  if (error) {
+    console.log('rooms error', error);
+
+    return <h1>could not load a post</h1>;
+  }
   return (
     <Container>
       <SubTittle>best choices</SubTittle>
+      {/* <SubTittle>best choices</SubTittle> */}
       <Title>Most popular</Title>
       {loading ? (
         <FeaturedPlaceSkelton />
