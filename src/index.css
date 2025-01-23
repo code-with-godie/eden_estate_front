@@ -56,3 +56,63 @@ body {
   color: transparent;
   background-clip: text;
 }
+.disabled-day {
+  background-color: #f0f0f0; /* Gray background for disabled dates */
+  color: #999; /* Gray text color for disabled dates */
+  pointer-events: none; /* Make the dates unclickable */
+}
+
+.dark-theme .react-datepicker__header {
+  background-color: #252423;
+  color: #fff;
+}
+
+.dark-theme .react-datepicker__day--disabled {
+  color: #999;
+  background-color: #f0f0f0;
+  pointer-events: none;
+}
+
+.dark-theme .react-datepicker__day--selected,
+.dark-theme .react-datepicker__day--in-range,
+.dark-theme .react-datepicker__day--keyboard-selected {
+  background-color: #3d91c9;
+  color: #fff;
+}
+
+.dark-theme
+  .react-datepicker__day--in-range:not(.react-datepicker__day--selected) {
+  background-color: #3d91c9;
+  color: #fff;
+  opacity: 0.5;
+}
+
+.dark-theme .react-datepicker__day--outside-month {
+  color: #999;
+}
+
+.dark-theme .react-datepicker__month-read-view,
+.dark-theme .react-datepicker__year-read-view,
+.dark-theme .react-datepicker__month-year-read-view {
+  background-color: #252423;
+  color: #fff;
+}
+
+.dark-theme .react-datepicker__navigation--previous,
+.dark-theme .react-datepicker__navigation--next {
+  border-color: #fff;
+}
+
+.dark-theme .react-datepicker__navigation--previous:hover,
+.dark-theme .react-datepicker__navigation--next:hover {
+  background-color: #3d91c9;
+}
+.picker {
+  grid-column: 5/10;
+  grid-row: 2/4;
+  background: cornflowerblue;
+
+  input {
+    border: none;
+  }
+}

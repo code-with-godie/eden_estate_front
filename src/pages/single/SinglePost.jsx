@@ -185,7 +185,7 @@ const SinglePost = () => {
               <Address>
                 {' '}
                 <LocationOnOutlined className='icon' />
-                {typeof country === 'string' && typeof state === 'string'
+                {typeof country === 'string' || typeof state === 'string'
                   ? `${
                       post?.city === post?.state
                         ? post?.state
@@ -248,6 +248,7 @@ const SinglePost = () => {
           )}
           {post && (
             <Rooms
+              single
               title={post?.title}
               estateID={post?._id}
             />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
-import { Avatar, IconButton } from '@mui/material';
+import { Avatar, IconButton, Skeleton } from '@mui/material';
 import PostList from '../search/PostList';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useFetch } from '../../api/useFetch';
@@ -20,6 +20,15 @@ const Container = styled.div`
   .profile {
     width: 70px;
     height: 70px;
+  }
+  .dark {
+    background: #2a2929;
+  }
+  .skeleton {
+    background-color: ${props => props.dark && '#626262'};
+    height: 100%;
+    flex: 1 0 200px;
+    margin: 0.5rem;
   }
   @media screen and (min-width: 768px) {
     flex-direction: row;
@@ -204,7 +213,16 @@ const Profile = () => {
   }, [userData]);
 
   if (userLoading) {
-    return <LoadingAnimation />;
+    return (
+      <Container>
+        <Skeleton
+          variant='rounded'
+          width={'100%'}
+          height={'100%'}
+          className={`skeleton ${darkMode && 'dark'}`}
+        />
+      </Container>
+    );
   }
   if (userError) {
     return <p> {error?.message} </p>;

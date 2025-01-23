@@ -143,7 +143,7 @@ const StepOne = ({ post, setPost, setIndex, setDescription }) => {
               />
             </InputWrapper>
             <InputWrapper>
-              <Label>estate price*</Label>
+              <Label>estate price (USD) *</Label>
               <LabelSmall>This is the net worth of your estate</LabelSmall>
               <Input
                 name='price'

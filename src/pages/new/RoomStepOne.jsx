@@ -134,7 +134,7 @@ const RoomStepOne = ({ post, setPost, setIndex, setDescription }) => {
             </InputWrapper>
             <InputWrapper>
               <Label>price* </Label>
-              <LabelSmall>how much for one day?</LabelSmall>
+              <LabelSmall>how much for one day (USD)?</LabelSmall>
               <Input
                 name='price'
                 value={post.price}
@@ -149,6 +149,7 @@ const RoomStepOne = ({ post, setPost, setIndex, setDescription }) => {
               <LabelSmall>does the room have a king size bed?</LabelSmall>
               <Input
                 name='kingSize'
+                min={0}
                 value={post.kingSize}
                 onChange={onChange}
                 type='number'
@@ -159,6 +160,7 @@ const RoomStepOne = ({ post, setPost, setIndex, setDescription }) => {
               <LabelSmall>does it have a queen size bed</LabelSmall>
               <Input
                 name='queenSize'
+                min={0}
                 value={post.queenSize}
                 type='number'
                 onChange={onChange}

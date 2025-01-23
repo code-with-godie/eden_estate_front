@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useAppContext } from '../../context/AppContextProvider';
 
 const ModalBackground = styled.div`
   position: fixed;
@@ -37,7 +38,8 @@ const CloseButton = styled.button`
   color: ${props => (props.darkMode ? '#fff' : '#000')};
 `;
 
-const Modal = ({ isOpen, onClose, children, darkMode }) => {
+const Modal = ({ isOpen, onClose, children }) => {
+  const { darkMode } = useAppContext();
   if (!isOpen) return null;
 
   return (

@@ -149,6 +149,8 @@ const Booking = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(data);
+
     data && setPost(data?.post);
   }, [data]);
   useEffect(() => {
@@ -231,11 +233,18 @@ const Booking = () => {
                   <Address>
                     {' '}
                     <LocationOnOutlined className='icon' />
-                    {`${
-                      post?.city === post?.state
-                        ? post?.state
-                        : `${post?.city},${post?.state}`
-                    },${post?.country}`}
+                    {typeof post?.country === 'string' &&
+                    typeof post?.state === 'string'
+                      ? `${
+                          post?.city === post?.state
+                            ? post?.state
+                            : `${post?.city},${post?.state}`
+                        },${post?.country}`
+                      : `${
+                          post?.city === post?.state?.name
+                            ? post?.state?.name
+                            : `${post?.city},${post?.state?.name}`
+                        },${post?.country?.name}`}
                   </Address>
                 </TitleContainer>
                 <UserContainer>

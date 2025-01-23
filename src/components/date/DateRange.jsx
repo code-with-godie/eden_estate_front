@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { DayPicker } from 'react-day-picker';
-import 'react-day-picker/dist/style.css';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import { format, differenceInCalendarDays } from 'date-fns';
@@ -36,17 +36,18 @@ const DatePickerWrapper = styled.div`
     props.isDark
       ? '0px 4px 20px rgba(79, 79, 79, 0.3)'
       : '0px 2px 10px rgba(0, 0, 0, 0.1)'};
-  width: 100vw;
-  height: 300px;
-  max-width: 200px;
+  width: 'auto';
+  height: auto;
+  max-height: 300px;
+  max-width: 300px;
   border-radius: 1rem;
   position: absolute;
   z-index: 50;
   overflow: auto;
   bottom: 105%;
   @media screen and (min-width: 768px) {
-    height: 350px;
-    max-width: 250px;
+    max-height: 350px;
+    max-width: 300px;
   }
 `;
 
@@ -110,6 +111,16 @@ const CustomDateRangePicker = ({
     }
   }, [checkInDate, checkOutDate, setDaysBooked]);
 
+  useEffect(() => {
+    if (checkInDate && checkOutDate) {
+      setCheckOutDate(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checkInDate]);
+
+  // Convert string dates to Date objects
+  const excludeDates = disabledDates.map(dateStr => new Date(dateStr));
+
   return (
     <Container>
       <Wrapper isDark={isDark}>
@@ -124,12 +135,13 @@ const CustomDateRangePicker = ({
           </DateRangeContainer>
           {isCheckInOpen && (
             <DatePickerWrapper isDark={isDark}>
-              <DayPicker
-                mode='single'
+              <DatePicker
                 selected={checkInDate}
-                onSelect={handleCheckInDateChange}
-                disabled={disabledDates}
-                hidden={{ before: new Date() }}
+                onChange={handleCheckInDateChange}
+                minDate={new Date()}
+                excludeDates={excludeDates}
+                inline
+                className={isDark ? 'dark-theme picker' : 'picker'}
               />
             </DatePickerWrapper>
           )}
@@ -145,12 +157,13 @@ const CustomDateRangePicker = ({
           </DateRangeContainer>
           {isCheckOutOpen && (
             <DatePickerWrapper isDark={isDark}>
-              <DayPicker
-                mode='single'
+              <DatePicker
                 selected={checkOutDate}
-                onSelect={handleCheckOutDateChange}
-                disabled={disabledDates}
-                hidden={{ before: new Date() }}
+                onChange={handleCheckOutDateChange}
+                minDate={checkInDate || new Date()}
+                excludeDates={excludeDates}
+                inline
+                className={isDark ? 'dark-theme' : ''}
               />
             </DatePickerWrapper>
           )}

@@ -16,12 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import DateRange from '../../components/date/DateRange';
 import { useFetch } from '../../api/useFetch';
 import { Bounce, toast, ToastContainer } from 'react-toastify';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import { StripeCard } from '../../components/stripe/StripeCard';
-import Modal from '../../components/model/Model'; // Import the Modal component
-
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY);
+import StripeCheckout from '../../components/stripe/StripeCheckout';
+import { addDays } from 'date-fns';
 
 const Container = styled.section`
   padding: 0.5rem;
@@ -124,22 +120,29 @@ const Room = ({
   bathrooms,
   estateID,
   estate,
+  single,
   _id,
 }) => {
   const { darkMode } = useAppContext();
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [progressMessage, setProgressMessage] = useState(null);
   const [daysBooked, setDaysBooked] = useState(0);
   const { data } = useFetch(`/reserve/${_id}`);
   const [creatingReserve, setcreatingReserve] = useState(false);
-  const [includeBreakFast, setIncludeBreakfast] = useState(true);
+  const showBreakFast =
+    typeof estateID === 'object'
+      ? estateID?.breakfast?.offered
+      : estate?.breakfast?.offered;
+
+  const [includeBreakFast, setIncludeBreakfast] = useState(
+    showBreakFast ? true : false
+  );
   const [disabledDates, setDisabledDates] = useState([]);
-  const [clientSecret, setClientSecret] = useState(null);
+  const [amount, setAmount] = useState(0);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const navigate = useNavigate();
   const { token, user } = useAppContext();
-
   const onDateChange = dates => {
     setStartDate(dates[0]);
     setEndDate(dates[1]);
@@ -163,9 +166,7 @@ const Room = ({
       }
       let tempDates = [];
       setcreatingReserve(true);
-      setProgressMessage('Reserving room');
       tempDates = [startDate, endDate];
-
       const reserved = await postData(
         '/reserve',
         { roomID: _id, userID: user?._id, dates: tempDates },
@@ -177,43 +178,7 @@ const Room = ({
         } = reserved;
         if (dates) {
           setDisabledDates(prev => [...prev, ...dates]);
-        }
-        setProgressMessage('Creating payment intent...');
-        const res = await postData(
-          '/pay/stripe',
-          {
-            userID: user?._id,
-            roomID: _id,
-            amount: includeBreakFast
-              ? `${
-                  price * daysBooked +
-                  (typeof estateID === 'object'
-                    ? estateID?.breakfast?.price
-                    : estate?.breakfast?.price)
-                }`
-              : price * daysBooked,
-          },
-          token
-        );
-        if (res?.clientSecret) {
-          setClientSecret(res.clientSecret);
-          setProgressMessage(null);
-          setShowPaymentModal(true); // Show the payment modal
-        } else {
-          toast.error(
-            'Failed to create a payment intent. Try again later 😟😟😟😟',
-            {
-              position: 'top-right',
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: `${darkMode ? 'dark' : 'light'}`,
-              transition: Bounce,
-            }
-          );
+          setShowPaymentModal(true);
         }
       } else {
         toast.error('Failed to reserve the room. Try again later 😟😟😟😟', {
@@ -242,46 +207,63 @@ const Room = ({
         theme: `${darkMode ? 'dark' : 'light'}`,
         transition: Bounce,
       });
-      console.log(error);
     } finally {
       setcreatingReserve(false);
     }
   };
-
   useEffect(() => {
-    if (progressMessage) {
-      toast.success(`${progressMessage}✅✅`, {
-        position: 'top-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: `${darkMode ? 'dark' : 'light'}`,
-        transition: Bounce,
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progressMessage]);
+    if (daysBooked > 0) {
+      const netAmount = price * daysBooked;
+      if (includeBreakFast) {
+        const breakFast =
+          typeof estateID === 'object'
+            ? estateID?.breakfast?.price
+            : estate?.breakfast?.price;
 
+        setAmount(netAmount + breakFast);
+        return;
+      }
+
+      setAmount(netAmount);
+    }
+  }, [daysBooked, estate?.breakfast?.price, estateID, includeBreakFast, price]);
   useEffect(() => {
     if (data) {
       const { reserves } = data;
       if (reserves) {
-        reserves?.forEach(item => {
+        const dateSet = new Set(disabledDates); // Initialize with existing disabledDates
+
+        const addDatesInRange = (startDate, endDate) => {
+          let currentDate = new Date(startDate);
+          while (currentDate <= endDate) {
+            dateSet.add(currentDate.toISOString());
+            currentDate = addDays(currentDate, 1);
+          }
+        };
+
+        reserves.forEach(item => {
           const { dates } = item;
-          if (dates) {
-            setDisabledDates(prev => [...prev, ...dates]);
+          if (dates.length >= 2) {
+            const checkInDate = new Date(dates[0]);
+            const checkOutDate = new Date(dates[1]);
+            addDatesInRange(checkInDate, checkOutDate);
           }
         });
+
+        setDisabledDates([...dateSet]); // Convert Set back to array and update state
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+  useEffect(() => {}, [disabledDates]);
 
   return (
     <Container
-      onClick={home ? () => navigate(`/book/${estate?._id}/${_id}`) : () => {}}
+      onClick={
+        home || single
+          ? () => navigate(`/book/${estate?._id || estateID}/${_id}`)
+          : () => {}
+      }
       className={darkMode ? 'dark' : 'light'}
       home={home}
     >
@@ -354,13 +336,13 @@ const Room = ({
       <Section className={`${home && 'last'}`}>
         <Wrapper>
           <Utility>
-            <Label className='bold'>price Kshs</Label>
+            <Label className='bold'>price $</Label>
             <Label> {price} /24hrs</Label>
           </Utility>
           {breakFast > 0 && (
             <Utility>
               <Label className='bold'>breakfast price</Label>
-              <Label>kshs {breakFast} </Label>
+              <Label>$ {breakFast} </Label>
             </Utility>
           )}
         </Wrapper>
@@ -395,10 +377,12 @@ const Room = ({
             {estate && <Label className='bold'>Estate: {estate?.title} </Label>}
           </Utility>
         )}
-        {(estate?.breakfast?.offered || typeof estateID === 'object') && (
+
+        {/* am checking the type of estateID because am resuing this component. some part it expect it to be a string others like book page it espect it ot be an object of the etstate itself. simply using populate method in the dtatabase in some routes where others am not using it */}
+        {showBreakFast && (
           <Wrapper>
             <Label>
-              breakfast @ Kshs.{' '}
+              breakfast @ $.{' '}
               {estate?.breakfast?.price || estateID?.breakfast?.price}{' '}
             </Label>
             {!home && (
@@ -420,23 +404,17 @@ const Room = ({
           <Utility>
             <Label className='bold'>total price :</Label>
             <Label>
-              {includeBreakFast
-                ? `${
-                    price * daysBooked +
-                    (typeof estateID === 'object'
-                      ? estateID?.breakfast?.price
-                      : estate?.breakfast?.price)
-                  }`
-                : price * daysBooked}{' '}
-              for {daysBooked} day(s){' '}
+              {amount} for {daysBooked} day(s){' '}
             </Label>
           </Utility>
         )}
         {!home && (
           <Wrapper>
             <Button
-              disabled={creatingReserve || !startDate || !endDate}
-              onClick={handleReserve}
+              disabled={
+                single ? false : creatingReserve || !startDate || !endDate
+              }
+              onClick={single ? () => {} : handleReserve}
             >
               {' '}
               <BookOnline />{' '}
@@ -457,35 +435,13 @@ const Room = ({
             </Button>
           </Wrapper>
         )}
-        {clientSecret && (
-          <Modal
-            isOpen={showPaymentModal}
-            onClose={() => setShowPaymentModal(false)}
-            darkMode={darkMode}
-          >
-            <Elements stripe={stripePromise}>
-              <StripeCard
-                clientSecret={clientSecret}
-                onSuccess={() => {
-                  toast.success('Payment succeeded! ✅✅', {
-                    position: 'top-right',
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: `${darkMode ? 'dark' : 'light'}`,
-                    transition: Bounce,
-                  });
-                  setTimeout(() => {
-                    navigate('/success');
-                  }, [1000]);
-                }}
-                darkMode={darkMode}
-              />
-            </Elements>
-          </Modal>
+        {showPaymentModal && (
+          <StripeCheckout
+            setShowPaymentModal={setShowPaymentModal}
+            showPaymentModal={showPaymentModal}
+            amount={amount}
+            roomID={_id}
+          />
         )}
       </Section>
       <ToastContainer />

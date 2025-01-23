@@ -72,34 +72,6 @@ const Input = styled.input`
   color: ${props => props.theme.color_primary};
 `;
 
-// const Select = styled.select`
-//   padding: 0.5rem;
-//   background: transparent;
-//   color: ${props => (props.dark ? '#fff' : '#000')};
-//   outline: none;
-//   border: 1px solid #a6a5a5bf; /* Match the border with other inputs */
-//   border-radius: 0.3rem;
-//   flex: 1;
-//   min-width: 0 !important;
-//   font-size: 1rem;
-
-//   /* Styling for options */
-//   option {
-//     background-color: transparent; /* Transparent background for options */
-//     color: ${props =>
-//       props.theme?.darkMode ? '#fff' : '#000'}; /* Text color for options */
-//     padding: 0.5rem;
-//   }
-
-//   /* Remove blue hover and focus on option elements */
-//   option:hover {
-//     background-color: ${props =>
-//       props.theme.darkMode ? '#555' : '#ddd'}; /* Change background on hover */
-//     color: ${props =>
-//       props.dark ? '#fff' : '#000'}; /* Change text color on hover */
-//   }
-// `;
-
 const Option = styled.option`
   background-color: transparent;
   appearance: none;
@@ -134,7 +106,7 @@ const Search = () => {
     location: searchParams.get('location') || '',
     minPrice: searchParams.get('minPrice') || 0,
     maxPrice: searchParams.get('maxPrice') || 1000000,
-    property: searchParams.get('property') || 'apartment',
+    property: searchParams.get('property') || '',
   });
   const [debouncedQuery] = useDebounce(query, 500);
   const [posts, setPosts] = useState([]);
@@ -149,7 +121,12 @@ const Search = () => {
   };
 
   useEffect(() => {
-    setSearchParams(debouncedQuery);
+    const filteredQuery = Object.fromEntries(
+      Object.entries(debouncedQuery).filter(
+        ([key, value]) => value !== '' && value !== 0
+      )
+    );
+    setSearchParams(filteredQuery);
   }, [debouncedQuery, setSearchParams]);
 
   useEffect(() => {
@@ -182,15 +159,6 @@ const Search = () => {
           <InputContainer className='container'>
             <InputWrapper>
               <Label>Type</Label>
-              {/* <Select
-                onChange={onChange}
-                name='type'
-                dark={darkMode}
-                value={query.type}
-              >
-                <Option>rent</Option>
-                <Option>buy</Option>
-              </Select> */}
               <FormControl fullWidth>
                 <Select
                   name='type'
@@ -235,7 +203,6 @@ const Search = () => {
             </InputWrapper>
             <InputWrapper>
               <Label>Property</Label>
-
               <FormControl fullWidth>
                 <Select
                   onChange={onChange}
