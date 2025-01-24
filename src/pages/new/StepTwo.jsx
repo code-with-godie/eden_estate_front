@@ -181,7 +181,7 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
           `/posts/update/${post?._id}`,
           {
             ...post,
-            image,
+            url: image,
           },
           token
         );
@@ -208,7 +208,7 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
         '/posts',
         {
           ...post,
-          image,
+          url: image,
         },
         token
       );

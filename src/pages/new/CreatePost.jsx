@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import StepOne from './StepOne';
 import StepTwo from './StepTwo';
 import { useLocation } from 'react-router-dom';
+import CloudinaryUpload from '../../components/widget/CloudinaryUploadWidget';
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
@@ -208,7 +209,7 @@ const CreatePost = () => {
         {image ? (
           <ImageContainer>
             <Image
-              src={image}
+              src={image?.secure_url}
               alt='hotel image'
             />
             <IconButton
@@ -219,11 +220,12 @@ const CreatePost = () => {
             </IconButton>
           </ImageContainer>
         ) : (
-          <DropZone
-            description='drag and drop a file here or'
-            single
-            setFiles={setImage}
-          />
+          <CloudinaryUpload setImage={setImage} />
+          // <DropZone
+          //   description='drag and drop a file here or'
+          //   single
+          //   setFiles={setImage}
+          // />
         )}
         {/* <FileViewer images={image} /> */}
       </Right>

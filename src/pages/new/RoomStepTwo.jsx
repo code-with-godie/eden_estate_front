@@ -109,7 +109,7 @@ const RoomStepTwo = ({
       if (edit) {
         const res = await updateData(
           `/room/update/${post?._id}`,
-          { ...post, image },
+          { ...post, url: image },
           token
         );
         if (res.success) {
@@ -132,7 +132,7 @@ const RoomStepTwo = ({
       }
 
       setLoading(true);
-      const res = await postData('/rooms', { ...post, image }, token);
+      const res = await postData('/rooms', { ...post, url: image }, token);
       if (res.success) {
         navigate(`/p/${post?.estateID}`);
       }

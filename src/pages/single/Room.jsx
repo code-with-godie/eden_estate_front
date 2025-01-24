@@ -269,7 +269,7 @@ const Room = ({
     >
       <Section>
         <Wrapper>
-          <Image src={image} />
+          <Image src={image?.secure_url || image} />
         </Wrapper>
         <Utilities>
           {balcony && (

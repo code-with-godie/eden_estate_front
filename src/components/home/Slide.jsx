@@ -57,7 +57,7 @@ const Slide = ({ image, desc, location, city, state, country, title, _id }) => {
       }}
     >
       <ImageContainer>
-        <Image src={image} />
+        <Image src={image?.secure_url || image} />
       </ImageContainer>
       <DescriptionContainer>
         <Price>{title} </Price>

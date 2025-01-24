@@ -25,7 +25,7 @@ function Pin({ item }) {
   console.log('marker', item);
 
   // Check if the image URL is valid before setting the marker icon
-  const imageUrl = item.image;
+  const imageUrl = item.image?.secure_url || item.image;
 
   // Set custom icon if the image is valid
   const customIcon = L.icon({
@@ -43,7 +43,7 @@ function Pin({ item }) {
       <Popup>
         <Container>
           <Image
-            src={item.image}
+            src={item.image?.secure_url || item.image}
             alt=''
           />
           <TextContainer>

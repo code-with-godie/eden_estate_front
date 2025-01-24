@@ -12,6 +12,7 @@ import { useFetch } from '../../api/useFetch';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import RoomStepOne from './RoomStepOne';
 import RoomStepTwo from './RoomStepTwo';
+import CloudinaryUpload from '../../components/widget/CloudinaryUploadWidget';
 const Wrapper = styled.div`
   display: flex;
   overflow: auto;
@@ -19,6 +20,7 @@ const Wrapper = styled.div`
   flex-direction: column-reverse;
   @media screen and (min-width: 768px) {
     flex-direction: row;
+    height: 100vh;
   }
 `;
 const Left = styled.div`
@@ -141,6 +143,9 @@ const NewRoom = () => {
   useEffect(() => {
     data && setTitle(data?.post?.title);
   }, [data]);
+  useEffect(() => {
+    console.log(image);
+  }, [image]);
   return (
     <Wrapper>
       <Left>
@@ -155,7 +160,7 @@ const NewRoom = () => {
           {image ? (
             <ImageContainer>
               <Image
-                src={image}
+                src={image?.secure_url}
                 alt='hotel image'
               />
               <IconButton
@@ -197,7 +202,7 @@ const NewRoom = () => {
         {image ? (
           <ImageContainer>
             <Image
-              src={image}
+              src={image?.secure_url}
               alt='hotel image'
             />
             <IconButton
@@ -208,11 +213,15 @@ const NewRoom = () => {
             </IconButton>
           </ImageContainer>
         ) : (
-          <DropZone
-            description='drag and drop a file here or'
-            single
-            setFiles={setImage}
+          <CloudinaryUpload
+            rooms
+            setImage={setImage}
           />
+          // <DropZone
+          //   description='drag and drop a file here or'
+          //   single
+          //   setFiles={setImage}
+          // />
         )}
         {/* <FileViewer images={image} /> */}
       </Right>
