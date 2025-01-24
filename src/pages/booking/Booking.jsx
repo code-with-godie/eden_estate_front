@@ -271,6 +271,8 @@ const Booking = () => {
                     posts={[
                       {
                         image: post?.image,
+                        url: post?.url,
+                        price: post?.price,
                         country: post?.country,
                         state: post?.state,
                         coodinates: post?.coodinates,

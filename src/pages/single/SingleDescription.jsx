@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import utilitiesImage from '../../assets/utility.png';
 import petImage from '../../assets/pet.png';
@@ -13,6 +13,10 @@ import chat from '../../assets/chat.png';
 import save from '../../assets/save.png';
 import { useAppContext } from '../../context/AppContextProvider';
 import Map from '../../components/map/Map';
+import { BookmarkBorderOutlined, BookmarkOutlined } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { appwriteService } from '../../appWrite/appwriteService';
+import LoadingAnimation from '../../components/loading/LoadingAnimation';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,6 +47,9 @@ const Item = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  .icon {
+    color: ${props => (props.dark ? 'white' : 'gray')};
+  }
 `;
 const ItemWrapper = styled.div`
   display: flex;
@@ -87,6 +94,7 @@ const SingleDescription = ({
   utilities,
   pet,
   image,
+  url,
   price,
   income,
   size,
@@ -98,8 +106,60 @@ const SingleDescription = ({
   state,
   bedrooms,
   bathrooms,
+  _id,
+  user: postUser,
 }) => {
-  const { darkMode } = useAppContext();
+  const { setRooms, darkMode, setConversation, user, handleBookmark } =
+    useAppContext();
+  const [bookmarked, setBookmarked] = useState(false);
+  const [creating, setCreating] = useState(false);
+
+  const navigate = useNavigate();
+  const handleMessege = async e => {
+    e.stopPropagation();
+    try {
+      if (!user) {
+        navigate('/login');
+        return;
+      }
+      setCreating(true);
+      const res = await appwriteService.createRoom([user?._id, postUser?._id]);
+      if (res?.created) {
+        setRooms(prev => [
+          res?.room,
+          ...prev?.filter(item => item.$id !== res?.room?.$id),
+        ]);
+        const con = {
+          roomID: res?.room?.$id,
+          ...user,
+          messeges: res?.room?.messeges,
+        };
+        localStorage.setItem('eden_estate_conversation', JSON.stringify(con));
+        setConversation(con);
+      } else {
+        const con = {
+          roomID: res?.room?.$id,
+          ...user,
+          messeges: res?.room?.messeges,
+        };
+        localStorage.setItem('eden_estate_conversation', JSON.stringify(con));
+        setConversation(con);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setCreating(false);
+    }
+  };
+  useEffect(() => {
+    if (user) {
+      if (user?.bookmarked?.includes(_id)) {
+        setBookmarked(true);
+      } else {
+        setBookmarked(false);
+      }
+    }
+  }, [user, _id]);
   return (
     <Container>
       <Title>General</Title>
@@ -205,23 +265,34 @@ const SingleDescription = ({
       <Wrapper className={darkMode ? 'dark' : 'light'}>
         <MapContainer>
           {coodinates && (
-            <Map posts={[{ country, state, image, price, coodinates }]} />
+            <Map posts={[{ country, state, image, url, price, coodinates }]} />
           )}
         </MapContainer>
       </Wrapper>
       <Control className={darkMode ? 'dark' : 'light'}>
-        <Item>
-          <Icon
-            className={`${darkMode && 'dark'}`}
-            src={chat}
-          />
-          <Label className={`${darkMode && 'dark'}`}>send a message</Label>
-        </Item>
-        <Item>
-          <Icon
-            className={`${darkMode && 'dark'}`}
-            src={save}
-          />
+        {postUser?._id !== user?._id && (
+          <Item onClick={handleMessege}>
+            <Icon
+              className={`${darkMode && 'dark'}`}
+              src={chat}
+            />
+            {creating ? (
+              <LoadingAnimation />
+            ) : (
+              <Label className={`${darkMode && 'dark'}`}>send a message</Label>
+            )}
+          </Item>
+        )}
+        <Item
+          dark={darkMode}
+          onClick={() => handleBookmark(_id)}
+        >
+          {bookmarked ? (
+            <BookmarkOutlined className='icon' />
+          ) : (
+            <BookmarkBorderOutlined className='icon' />
+          )}
+
           <Label className={`${darkMode && 'dark'}`}>save the place</Label>
         </Item>
       </Control>

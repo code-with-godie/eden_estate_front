@@ -7,7 +7,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import { postData, updateData } from '../../api/apiCalls';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import { useLocation } from '../../hooks/useLocation';
-import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  MenuItem,
+  Select,
+} from '@mui/material';
 
 const Wrapper = styled.div`
   display: flex;
@@ -89,18 +96,6 @@ const Button = styled.button`
     color: gray;
     background-color: #00000068;
   }
-`;
-const Select = styled.select`
-  padding: 0.5rem;
-  background: transparent;
-  outline: none;
-  border: none;
-  flex: 1;
-  min-width: 0 !important;
-  font-size: 1rem;
-  color: ${props => props.theme.color_primary};
-  border: 1px solid #a6a5a5bf;
-  border-radius: 0.5rem;
 `;
 const StyledCheckbox = styled(Checkbox)`
   &.Mui-checked {
@@ -268,16 +263,48 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
             </InputWrapper>
             <InputWrapper>
               <Label>property*</Label>
-              <Select
-                name='property'
-                value={post.property}
-                onChange={onChange}
-              >
-                <Option>apartment</Option>
-                <Option>house</Option>
-                <Option>condo</Option>
-                <Option>land</Option>
-              </Select>
+              <FormControl fullWidth>
+                <Select
+                  name='property'
+                  value={post.property}
+                  onChange={onChange}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value='apartment'>apartment</MenuItem>
+                  <MenuItem value='house'>house</MenuItem>
+                  <MenuItem value='condo'>condo</MenuItem>
+                  <MenuItem value='land'>land</MenuItem>
+                </Select>
+              </FormControl>
             </InputWrapper>
           </Item>
           <Item>
@@ -321,26 +348,96 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
           <Item className='small'>
             <InputWrapper>
               <Label>utility policies</Label>
-              <Select
-                name='utilities'
-                value={post.utilities}
-                onChange={onChange}
-              >
-                <Option>Owner is responsible</Option>
-                <Option>Tenant are responsible</Option>
-                <Option>shared</Option>
-              </Select>
+              <FormControl fullWidth>
+                <Select
+                  name='utilities'
+                  value={post.utilities}
+                  onChange={onChange}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value='Tenant are responsible'>
+                    Tenant are responsible
+                  </MenuItem>
+                  <MenuItem value='Owner is responsible'>
+                    Owner is responsible
+                  </MenuItem>
+                  <MenuItem value='shared cost'>shared cost</MenuItem>
+                </Select>
+              </FormControl>
             </InputWrapper>
             <InputWrapper>
               <Label>pet policies</Label>
-              <Select
-                name='pet'
-                value={post.pet}
-                onChange={onChange}
-              >
-                <Option>pet are allowed</Option>
-                <Option>pet are not allowed</Option>
-              </Select>
+              <FormControl fullWidth>
+                <Select
+                  name='pet'
+                  value={post.pet}
+                  onChange={onChange}
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value='pet are allowed'>pet are allowed</MenuItem>
+                  <MenuItem value='pet are not allowed'>
+                    pet are not allowed
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </InputWrapper>
             <InputWrapper>
               <FormGroup>
@@ -360,6 +457,7 @@ const StepTwo = ({ post, setPost, setIndex, setDescription, image, edit }) => {
               <Input
                 name='price'
                 type='number'
+                min={0}
                 disabled={!post?.breakfast?.offered}
                 value={post.breakfast?.price}
                 onChange={handleBreakfast}

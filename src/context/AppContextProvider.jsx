@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import FirstLoading from '../components/loading/FirstLoading';
+import { useNavigate } from 'react-router-dom';
+import { updateData } from '../api/apiCalls';
 const AppContext = createContext({ darkMode: true, toggleTheme: () => {} });
 const AppContextProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
@@ -11,7 +13,6 @@ const AppContextProvider = ({ children }) => {
   const [rooms, setRooms] = useState([]);
   const [conversation, setConversation] = useState(null);
   const [chats, setChats] = useState([]);
-
   const toggleTheme = () => {
     setDarkMode(prev => {
       localStorage.setItem('eden_estate_theme', JSON.stringify(!prev));
@@ -44,6 +45,14 @@ const AppContextProvider = ({ children }) => {
     setUser(user);
     setToken(token);
   };
+  const handleBookmark = async postID => {
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    const res = await updateData(`/users/bookmark/${postID}`, {}, token);
+    updateUser(res.user);
+  };
   const logout = () => {
     localStorage.setItem('eden_estate_user', JSON.stringify(null));
     localStorage.setItem('eden_estate_token', JSON.stringify(null));
@@ -65,6 +74,7 @@ const AppContextProvider = ({ children }) => {
     setRooms,
     conversation,
     setConversation,
+    handleBookmark,
     isDrawerOpen,
     updateUser,
     updateToken,

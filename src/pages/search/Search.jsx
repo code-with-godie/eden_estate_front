@@ -72,11 +72,6 @@ const Input = styled.input`
   color: ${props => props.theme.color_primary};
 `;
 
-const Option = styled.option`
-  background-color: transparent;
-  appearance: none;
-`;
-
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -104,14 +99,14 @@ const Search = () => {
   const [query, setQuery] = useState({
     type: searchParams.get('type') || '',
     location: searchParams.get('location') || '',
-    minPrice: searchParams.get('minPrice') || 0,
-    maxPrice: searchParams.get('maxPrice') || 1000000,
+    pet: searchParams.get('pet') || '',
+    utilities: searchParams.get('utilities') || '',
     property: searchParams.get('property') || '',
   });
   const [debouncedQuery] = useDebounce(query, 500);
   const [posts, setPosts] = useState([]);
   const { data, loading, error } = useFetch(
-    `/posts/search?location=${debouncedQuery.location}&type=${debouncedQuery.type}&property=${debouncedQuery.property}&minPrice=${debouncedQuery.minPrice}&maxPrice=${debouncedQuery.maxPrice}`
+    `/posts/search?location=${debouncedQuery.location}&type=${debouncedQuery.type}&property=${debouncedQuery.property}&pet=${debouncedQuery.pet}&utilities=${debouncedQuery.utilities}`
   );
 
   const onChange = e => {
@@ -250,28 +245,99 @@ const Search = () => {
           </InputContainer>
           <InputContainer className='container'>
             <InputWrapper>
-              <Label>Min Price</Label>
-              <InputContainer>
-                <Input
-                  placeholder='0'
-                  type='number'
+              <Label>Utilities</Label>
+              <FormControl fullWidth>
+                <Select
+                  name='utilities'
+                  value={query.utilities}
                   onChange={onChange}
-                  name='minPrice'
-                  value={query.minPrice}
-                />
-              </InputContainer>
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value=''>Reset</MenuItem>
+                  <MenuItem value='Tenant are responsible'>
+                    Tenant are responsible
+                  </MenuItem>
+                  <MenuItem value='Owner is responsible'>
+                    Owner is responsible
+                  </MenuItem>
+                  <MenuItem value='shared cost'>shared cost</MenuItem>
+                </Select>
+              </FormControl>
             </InputWrapper>
             <InputWrapper>
-              <Label>Max Price</Label>
-              <InputContainer>
-                <Input
-                  placeholder='0'
-                  type='number'
+              <Label>Pets</Label>
+              <FormControl fullWidth>
+                <Select
+                  name='pet'
+                  value={query.pet}
                   onChange={onChange}
-                  name='maxPrice'
-                  value={query.maxPrice}
-                />
-              </InputContainer>
+                  sx={{
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    color: () => (darkMode ? 'white' : 'black'),
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: () => (darkMode ? 'white' : 'gray'),
+                    },
+                    '& .MuiSelect-icon': {
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '& .MuiMenuItem-root': {
+                      backgroundColor: darkMode ? 'black' : '#fff',
+                      color: () => (darkMode ? 'white' : 'black'),
+                    },
+                    '&.Mui-disabled': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: '#9797973f',
+                      },
+                      backgroundColor: ' #9797973f',
+                      color: '#bfbebe',
+                      cursor: 'not-allowed',
+                      '& .MuiSelect-icon': {
+                        color: '#bfbebe60',
+                      },
+                    },
+                  }}
+                >
+                  <MenuItem value=''>Reset</MenuItem>
+                  <MenuItem value='pet are allowed'>pet are allowed</MenuItem>
+                  <MenuItem value='pet are not allowed'>
+                    pet are not allowed
+                  </MenuItem>
+                </Select>
+              </FormControl>
             </InputWrapper>
           </InputContainer>
         </Form>

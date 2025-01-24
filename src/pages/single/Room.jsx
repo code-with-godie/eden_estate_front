@@ -3,14 +3,12 @@ import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import LoadingAnimation from '../../components/loading/LoadingAnimation';
 import { postData } from '../../api/apiCalls';
-import {
-  Bathroom,
-  Bed,
-  BookOnline,
-  People,
-  Tv,
-  Wifi,
-} from '@mui/icons-material';
+import { Bathroom, BookOnline, People, Tv, Wifi } from '@mui/icons-material';
+import { FaBed } from 'react-icons/fa';
+import { MdBalcony } from 'react-icons/md';
+import { SiDigitalocean } from 'react-icons/si';
+import { MdForest } from 'react-icons/md';
+import { GiMountainRoad } from 'react-icons/gi';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import DateRange from '../../components/date/DateRange';
@@ -32,7 +30,7 @@ const Container = styled.section`
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
-  height: ${props => (props.home ? '450px' : 'auto')};
+  height: ${props => (props.home ? '500px' : 'auto')};
 `;
 
 const Section = styled.article`
@@ -66,7 +64,9 @@ const Utilities = styled.div`
   column-gap: 0.5rem;
   flex: 1;
 `;
-
+const UtilitiesWrapper = styled.div`
+  flex: 1;
+`;
 const Utility = styled.div`
   display: flex;
   align-items: center;
@@ -80,6 +80,12 @@ const Label = styled.p`
     font-size: 1rem;
     color: var(--faded_blue);
   }
+`;
+const Title = styled.h2`
+  font-size: 1.2rem;
+  text-transform: capitalize;
+  color: var(--faded_blue);
+  font-weight: bold;
 `;
 
 const Button = styled.button`
@@ -103,6 +109,7 @@ const Button = styled.button`
 
 const Room = ({
   image,
+  url,
   home,
   showPicker,
   kingSize,
@@ -111,6 +118,7 @@ const Room = ({
   guests,
   breakFast,
   price,
+  title,
   conditional,
   mountain,
   forest,
@@ -269,68 +277,71 @@ const Room = ({
     >
       <Section>
         <Wrapper>
-          <Image src={image?.secure_url || image} />
+          <Image src={url?.secure_url || image} />
         </Wrapper>
-        <Utilities>
-          {balcony && (
+        {title && <Title> {title} </Title>}
+        <UtilitiesWrapper>
+          <Utilities>
+            {balcony && (
+              <Utility>
+                <MdBalcony />
+                <Label> Balcony</Label>
+              </Utility>
+            )}
             <Utility>
-              <Bed />
-              <Label> Balcony</Label>
+              <Bathroom />
+              <Label> {bathrooms} bathroom(s)</Label>
             </Utility>
-          )}
-          <Utility>
-            <Bathroom />
-            <Label> {bathrooms} bathroom(s)</Label>
-          </Utility>
-          <Utility>
-            <People />
-            <Label>{guests} guest (s)</Label>
-          </Utility>
-          {wifi && (
             <Utility>
-              <Wifi />
-              <Label>free wifi</Label>
+              <People />
+              <Label>{guests} guest (s)</Label>
             </Utility>
-          )}
-          {conditional && (
+            {wifi && (
+              <Utility>
+                <Wifi />
+                <Label>free wifi</Label>
+              </Utility>
+            )}
+            {conditional && (
+              <Utility>
+                <Wifi />
+                <Label>air conditional</Label>
+              </Utility>
+            )}
             <Utility>
-              <Wifi />
-              <Label>air conditional</Label>
+              <FaBed />
+              <Label> {kingSize} king size</Label>
             </Utility>
-          )}
-          <Utility>
-            <Wifi />
-            <Label> {kingSize} king size</Label>
-          </Utility>
-          <Utility>
-            <Wifi />
-            <Label> {queenSize} queen size</Label>
-          </Utility>
-          {tv && (
             <Utility>
-              <Tv />
-              <Label>TV</Label>
+              <FaBed />
+              <Label> {queenSize} queen size</Label>
             </Utility>
-          )}
-          {ocean && (
-            <Utility>
-              <Tv />
-              <Label>ocean view</Label>
-            </Utility>
-          )}
-          {mountain && (
-            <Utility>
-              <Tv />
-              <Label>mountain view</Label>
-            </Utility>
-          )}
-          {forest && (
-            <Utility>
-              <Tv />
-              <Label>forest view</Label>
-            </Utility>
-          )}
-        </Utilities>
+            {tv && (
+              <Utility>
+                <Tv fontSize='small' />
+                <Label>TV</Label>
+              </Utility>
+            )}
+            {ocean && (
+              <Utility>
+                <SiDigitalocean />
+                <Label>ocean view</Label>
+              </Utility>
+            )}
+            {mountain && (
+              <Utility>
+                <GiMountainRoad />
+                <Label>mountain view</Label>
+              </Utility>
+            )}
+            {forest && (
+              <Utility>
+                <MdForest />
+                <Label>forest view</Label>
+              </Utility>
+            )}
+          </Utilities>
+        </UtilitiesWrapper>
       </Section>
       <Horizontal />
       <Section className={`${home && 'last'}`}>

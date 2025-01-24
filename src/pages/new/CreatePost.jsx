@@ -145,7 +145,10 @@ const CreatePost = () => {
           return newPost;
         }
       });
-      setImage(post?.image);
+      setImage({
+        secure_url: post?.url ? post?.url?.secure_url : post?.image,
+        public_id: post?.url ? post?.url?.public_id : '',
+      });
     }
   }, [location]);
   return (
@@ -159,7 +162,13 @@ const CreatePost = () => {
         </Title>
         <Description>
           {edit
-            ? `This estate is located at ${post.state?.name}, ${post?.country?.name}`
+            ? `This estate is located at ${
+                typeof post.state === 'object' ? post?.state?.name : post?.state
+              }, ${
+                typeof post.country === 'object'
+                  ? post?.country?.name
+                  : post?.country
+              }`
             : ' just a few step and you join million of lardlords all across th globe'}
         </Description>
         <SmallTitle> {desc} </SmallTitle>

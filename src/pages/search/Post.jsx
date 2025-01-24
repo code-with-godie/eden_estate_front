@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { useAppContext } from '../../context/AppContextProvider';
 import { updateData } from '../../api/apiCalls';
 import { motion } from 'framer-motion';
+import { Bounce, toast, ToastContainer } from 'react-toastify';
 const Container = styled(motion.div)`
   display: flex;
   cursor: pointer;
@@ -106,7 +107,7 @@ const Post = ({ variants, ...post }) => {
   } = post;
   const [bookmarked, setBookmarked] = useState(false);
 
-  const { user, token, updateUser } = useAppContext();
+  const { user, handleBookmark, darkMode } = useAppContext();
   const handleMessege = async e => {
     e.stopPropagation();
     if (!user) {
@@ -117,14 +118,23 @@ const Post = ({ variants, ...post }) => {
       state: { userID: postUser?._id },
     });
   };
-  const handleBookmark = async e => {
-    e.stopPropagation();
-    if (!user) {
-      navigate('/login');
-      return;
+  const bookmarkPost = async e => {
+    try {
+      e.stopPropagation();
+      handleBookmark(_id);
+    } catch (error) {
+      toast.error('Failed to bookmark post. try again lATER', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: `${darkMode ? 'dark' : 'light'}`,
+        transition: Bounce,
+      });
     }
-    const res = await updateData(`/users/bookmark/${_id}`, {}, token);
-    updateUser(res.user);
   };
   useEffect(() => {
     if (user) {
@@ -169,7 +179,7 @@ const Post = ({ variants, ...post }) => {
           <FooterRight>
             <IconWrapper
               className='icon-btn'
-              onClick={handleBookmark}
+              onClick={bookmarkPost}
             >
               {bookmarked ? (
                 <BookmarkOutlined className='icon' />
@@ -180,9 +190,10 @@ const Post = ({ variants, ...post }) => {
 
             {postUser?._id === user?._id ? (
               <IconWrapper
-                onClick={() =>
-                  navigate('/new/post', { state: { update: true, post } })
-                }
+                onClick={e => {
+                  e.stopPropagation();
+                  navigate('/new/post', { state: { update: true, post } });
+                }}
                 className='icon-btn'
               >
                 <Edit className='icon' />
@@ -198,6 +209,7 @@ const Post = ({ variants, ...post }) => {
           </FooterRight>
         </FooterContainer>
       </Right>
+      <ToastContainer />
     </Container>
   );
 };

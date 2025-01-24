@@ -44,7 +44,7 @@ const Description = styled.p`
   font-size: 0.95em;
   font-style: italic;
 `;
-const Slide = ({ image, desc, location, city, state, country, title, _id }) => {
+const Slide = ({ image, desc, url, city, state, country, title, _id }) => {
   const navigate = useNavigate();
   return (
     <Container
@@ -57,7 +57,7 @@ const Slide = ({ image, desc, location, city, state, country, title, _id }) => {
       }}
     >
       <ImageContainer>
-        <Image src={image?.secure_url || image} />
+        <Image src={url?.secure_url || image} />
       </ImageContainer>
       <DescriptionContainer>
         <Price>{title} </Price>
