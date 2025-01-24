@@ -176,7 +176,7 @@ const CreatePost = () => {
           {image ? (
             <ImageContainer>
               <Image
-                src={image}
+                src={image?.secure_url}
                 alt='hotel image'
               />
               <IconButton
@@ -187,11 +187,7 @@ const CreatePost = () => {
               </IconButton>
             </ImageContainer>
           ) : (
-            <DropZone
-              description='drag and drop a file here or'
-              single
-              setFiles={setImage}
-            />
+            <CloudinaryUpload setImage={setImage} />
           )}
         </Right>
         <Container>

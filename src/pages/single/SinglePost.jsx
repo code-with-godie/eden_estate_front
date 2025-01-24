@@ -47,15 +47,6 @@ const ImageContainer = styled.div`
   position: relative;
   padding: 0.5rem;
 `;
-const OtherImagesContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  padding: 1rem;
-  @media screen and (min-width: 480px) {
-    flex-direction: column;
-  }
-`;
 const Images = styled.img`
   width: 100%;
   height: auto;
@@ -63,14 +54,7 @@ const Images = styled.img`
   object-fit: cover;
   border-radius: 0.5rem;
 `;
-const OtherImages = styled.img`
-  width: 150px;
-  /* max-width: 300px; */
-  height: auto;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 0.5rem;
-`;
+
 const TitleWrapper = styled.div`
   display: flex;
   gap: 0.5rem;
@@ -167,16 +151,16 @@ const SinglePost = () => {
       <Left>
         <Top>
           <ImageContainer>
-            <Images src={post?.image} />
+            <Images src={post?.url ? post.url?.secure_url : post?.image} />
           </ImageContainer>
-          <OtherImagesContainer>
+          {/* <OtherImagesContainer>
             {post?.images?.slice(1)?.map((item, index) => (
               <OtherImages
                 key={index}
                 src={item}
               />
             ))}
-          </OtherImagesContainer>
+          </OtherImagesContainer> */}
         </Top>
         <Bottom>
           <TitleWrapper>

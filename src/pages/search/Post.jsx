@@ -99,14 +99,13 @@ const Post = ({ variants, ...post }) => {
     country,
     title,
     _id,
-    image,
+    url,
     property,
     pet,
     city,
     type,
   } = post;
   const [bookmarked, setBookmarked] = useState(false);
-
   const { user, handleBookmark, darkMode } = useAppContext();
   const handleMessege = async e => {
     e.stopPropagation();
@@ -151,7 +150,7 @@ const Post = ({ variants, ...post }) => {
       onClick={() => navigate(`/p/${_id}`)}
     >
       <Left>
-        <Image src={image} />
+        <Image src={url?.secure_url} />
       </Left>
       <Right>
         <Title> {title} </Title>

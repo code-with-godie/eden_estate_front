@@ -171,10 +171,9 @@ const NewRoom = () => {
               </IconButton>
             </ImageContainer>
           ) : (
-            <DropZone
-              description='drag and drop a file here or'
-              single
-              setFiles={setImage}
+            <CloudinaryUpload
+              rooms
+              setImage={setImage}
             />
           )}
         </Right>
